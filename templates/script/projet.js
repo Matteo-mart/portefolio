@@ -51,7 +51,7 @@
         }
     }
 
-    async function moveToCorbeille() {
+    async function MoveToCorbeille() {
         const id = window.location.pathname.split('/').pop();
         try {
             const res = await fetch(`/move-to-corbeille?id=${id}`, { method: 'POST' });

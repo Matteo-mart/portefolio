@@ -2,6 +2,7 @@ package corbeillemariadb
 
 import (
 	"fmt"
+	"portefolio/mariadb"
 	"portefolio/utils"
 )
 
@@ -9,7 +10,7 @@ import (
 Corbeille image (sélectionne url) via 'project_id'
 */
 func GetCorbeilleImages(projectID int) ([]string, error) {
-	rows, err := DB.Query("SELECT url FROM corbeille_image WHERE project_id = ?", projectID)
+	rows, err := mariadb.DB.Query("SELECT url FROM corbeille_image WHERE project_id = ?", projectID)
 	if err != nil {
 		return nil, err
 	}
@@ -32,13 +33,13 @@ func MoveToCorbeille(id string) error {
 	var titre, technologie, url_source string
 	var date_creation, description, explication, probleme, solution string
 
-	err := DB.QueryRow("SELECT id, titre, date_creation, description, technologie, explication, probleme, solution, url_source FROM project WHERE id = ?", id).Scan(
+	err := mariadb.DB.QueryRow("SELECT id, titre, date_creation, description, technologie, explication, probleme, solution, url_source FROM project WHERE id = ?", id).Scan(
 		&projectID, &titre, &date_creation, &description, &technologie, &explication, &probleme, &solution, &url_source)
 	if err != nil {
 		return fmt.Errorf("projet introuvable : %v", err)
 	}
 
-	_, err = DB.Exec(`INSERT INTO corbeille 
+	_, err = mariadb.DB.Exec(`INSERT INTO corbeille 
         (project_id, titre, date_creation, description, technologie, explication, probleme, solution, url_source) 
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 		projectID, titre, date_creation, description, technologie, explication, probleme, solution, url_source)
@@ -46,14 +47,14 @@ func MoveToCorbeille(id string) error {
 		return err
 	}
 
-	_, err = DB.Exec(`
+	_, err = mariadb.DB.Exec(`
         INSERT INTO corbeille_image (project_id, url, mime_type)
         SELECT project_id, url, mime_type FROM project_image WHERE project_id = ?`, projectID)
 	if err != nil {
 		return fmt.Errorf("erreur copie images : %v", err)
 	}
 
-	_, err = DB.Exec("DELETE FROM project WHERE id = ?", id)
+	_, err = mariadb.DB.Exec("DELETE FROM project WHERE id = ?", id)
 	return err
 }
 
@@ -62,7 +63,7 @@ Permet d'afficher tous les projets qui sont dans la corbeille
 et les ranger par date de suppression
 */
 func GetCorbeille() ([]utils.CorbeilleEntry, error) {
-	rows, err := DB.Query("SELECT id, project_id, titre, date_suppression FROM corbeille ORDER BY date_suppression DESC")
+	rows, err := mariadb.DB.Query("SELECT id, project_id, titre, date_suppression FROM corbeille ORDER BY date_suppression DESC")
 	if err != nil {
 		return nil, err
 	}
@@ -75,7 +76,7 @@ func GetCorbeille() ([]utils.CorbeilleEntry, error) {
 			return nil, err
 		}
 
-		imgRows, err := DB.Query("SELECT url FROM corbeille_image WHERE project_id = ?", e.ProjectID)
+		imgRows, err := mariadb.DB.Query("SELECT url FROM corbeille_image WHERE project_id = ?", e.ProjectID)
 		if err == nil {
 			defer imgRows.Close()
 			for imgRows.Next() {
@@ -96,18 +97,18 @@ Permet de mettre dans la corbeille les technologies
 */
 func MoveToCorbeilleTech(id int) error {
 	var nom, icone, url_source string
-	err := DB.QueryRow("SELECT nom, icone, url_source FROM technologies WHERE id = ?", id).Scan(&nom, &icone, &url_source)
+	err := mariadb.DB.QueryRow("SELECT nom, icone, url_source FROM technologies WHERE id = ?", id).Scan(&nom, &icone, &url_source)
 	if err != nil {
 		return fmt.Errorf("technologie introuvable : %v", err)
 	}
 
-	_, err = DB.Exec(`INSERT INTO corbeille_technologies (tech_id, nom, icone, url_source) VALUES (?, ?, ?, ?)`,
+	_, err = mariadb.DB.Exec(`INSERT INTO corbeille_technologies (tech_id, nom, icone, url_source) VALUES (?, ?, ?, ?)`,
 		id, nom, icone, url_source)
 	if err != nil {
 		return fmt.Errorf("erreur insertion corbeille : %v", err)
 	}
 
-	_, err = DB.Exec("DELETE FROM technologies WHERE id = ?", id)
+	_, err = mariadb.DB.Exec("DELETE FROM technologies WHERE id = ?", id)
 	return err
 }
 
@@ -115,7 +116,7 @@ func MoveToCorbeilleTech(id int) error {
 Permet d'afficher les technologies dans la corbeille
 */
 func GetCorbeilleTech() ([]utils.CorbeilleTech, error) {
-	rows, err := DB.Query("SELECT id, tech_id, nom, icone, url_source, date_suppression FROM corbeille_technologies ORDER BY date_suppression DESC")
+	rows, err := mariadb.DB.Query("SELECT id, tech_id, nom, icone, url_source, date_suppression FROM corbeille_technologies ORDER BY date_suppression DESC")
 	if err != nil {
 		return nil, err
 	}
