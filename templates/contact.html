@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact - Mon Portfolio</title>
+    <link rel="stylesheet" href="/templates/style/contact.css">
+</head>
+<body>
+
+<header>
+    <a href="/">← Retour</a>
+    <h2>Contact</h2>
+    <!-- <div class="burger-icon" onclick="document.getElementById('menu').classList.toggle('active')">☰</div>
+    <div id="menu">
+        <a href="/">Accueil</a>
+        <a href="/admin">Gérer</a>
+        <a href="/corbeille">Corbeille</a>
+    </div> -->
+</header>
+
+<div class="container">
+
+    <div class="contact-card">
+        <h3>Informations</h3>
+        {{range .}}
+        <div class="contact-item">
+            <span class="label">Email</span>
+            <span class="value">{{index . "email"}}</span>
+        </div>
+        <div class="contact-item">
+            <span class="label">Téléphone</span>
+            <span class="value">{{index . "telephone"}}</span>
+        </div>
+        <div class="social-links">
+            {{if index . "linkedin"}}
+            <a href="{{index . "linkedin"}}" class="btn-social linkedin" target="_blank">LinkedIn</a>
+            {{end}}
+            {{if index . "github"}}
+            <a href="{{index . "github"}}" class="btn-social github" target="_blank">GitHub</a>
+            {{end}}
+        </div>
+        {{else}}
+        <p style="color:#5a5f7a;font-size:0.9rem;">Les informations de contact ne sont pas disponibles.</p>
+        {{end}}
+    </div>
+
+
+
+</div>
+
+<div id="toast"></div>
+
+ <script src="/templates/script/contact.js"></script>
+
+</body>
+</html>

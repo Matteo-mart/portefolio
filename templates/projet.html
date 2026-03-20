@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Titre}} | Présentation</title>
+    <link rel="stylesheet" href="/templates/style/projet.css">
+
+</head>
+<body>
+<div class="project-container">
+
+    <div class="left-col">
+        {{range .Images}}
+            <div class="media-item" data-file="{{.}}">
+            </div>
+        {{else}}
+            <p style="color:#5a5f7a;font-size:0.9rem;">Aucun fichier disponible</p>
+        {{end}}
+
+    </div>
+
+    <div class="right-col">
+
+        <h1>{{.Titre}}</h1>
+
+        <div class="meta-bar">
+            <div class="meta-date">📅 <span>{{.DateCreation}}</span></div>
+            <span class="tech-badge">{{.Technologie}}</span>
+        </div>
+
+        <div class="section-box">
+            <h3>Description</h3>
+            <p class="description-text" id="description-text">{{.Description}}</p>
+        </div>
+
+        <div class="section-box">
+            <h3>Problème</h3>
+            <div class="content-box" id="probleme-box">{{.Probleme}}</div>
+        </div>
+
+        <div class="section-box">
+            <h3>Solution</h3>
+            <div class="content-box solution" id="solution-box">{{.Solution}}</div>
+        </div>
+
+        <div class="actions">
+            <a href="{{.UrlSource}}" class="btn-source" target="_blank">Voir le Github →</a>
+            <a href="/" class="btn-back">← Retour à l'accueil</a>
+        </div>
+    </div>
+
+</div>
+
+    <script src="/templates/script/projet.js"></script>
+<button class="btn-del" onclick="moveToCorbeille()">🗑 Corbeille</button>
+
+</body>
+</html>

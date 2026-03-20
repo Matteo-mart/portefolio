@@ -1,0 +1,297 @@
+:root {
+    --bg-base:        #f0f2f5;
+    --bg-surface:     #ffffff;
+    --bg-elevated:    #f8fafc;
+    --bg-hover:       #edf2f7;
+
+    --border:         #e2e8f0;
+    --border-focus:   #4f8ef7;
+
+    --text-primary:   #1e293b;
+    --text-secondary: #475569;
+    --text-muted:     #64748b;
+    --text-dimmed:    #94a3b8;
+    
+    --accent:         #3b82f6;
+    --accent-soft:    rgba(59, 130, 246, 0.1);
+    --green:          #10b981;
+    --red:            #ef4444;
+    --red-soft:       rgba(239, 68, 68, 0.05);
+
+    --radius-sm:      6px;
+    --radius-md:      10px;
+    --radius-lg:      16px;
+    --shadow-sm:      0 1px 3px rgba(0,0,0,0.1);
+    --shadow-md:      0 4px 6px -1px rgba(0,0,0,0.1);
+}
+
+
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+    background-color: var(--bg-base);
+    color: var(--text-primary);
+    line-height: 1.6;
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 { 
+    color: var(--text-primary); 
+    font-weight: 700;
+    margin-top: 0;
+}
+
+
+
+header {
+    display:         flex;
+    justify-content: space-between;
+    align-items:     center;
+    max-width:       700px;
+    margin:          0 auto 24px;
+    background:      var(--bg-surface);
+    padding:         14px 20px;
+    border-radius:   var(--radius-lg);
+    border:          1px solid var(--border);
+    position:        relative;
+}
+
+header a {
+    text-decoration: none;
+    color:           var(--accent);
+    font-weight:     600;
+    font-size:       0.875rem;
+}
+
+header h2 {
+    margin:      0;
+    font-size:   0.95rem;
+    font-weight: 700;
+}
+
+
+
+#burger-btn {
+    cursor:        pointer;
+    font-size:     1.1rem;
+    color:         var(--text-muted);
+    padding:       6px 8px;
+    border-radius: var(--radius-md);
+    line-height:   1;
+}
+
+#burger-btn:hover {
+    background: var(--bg-hover);
+    color:      var(--text-primary);
+}
+
+#menu-nav {
+    display:       none;
+    position:      absolute;
+    top:           calc(100% + 8px);
+    right:         0;
+    background:    var(--bg-elevated);
+    padding:       6px;
+    border-radius: var(--radius-lg);
+    border:        1px solid var(--border);
+    box-shadow:    0 12px 40px rgba(0, 0, 0, 0.5);
+    z-index:       1000;
+    min-width:     180px;
+}
+
+#menu-nav.actif {
+    display: block;
+}
+
+#menu-nav a {
+    display:       block;
+    padding:       9px 14px;
+    color:         var(--text-secondary);
+    text-decoration: none;
+    font-size:     0.875rem;
+    border-radius: var(--radius-md);
+}
+
+#menu-nav a:hover {
+    background: var(--bg-hover-deep);
+    color:      var(--accent);
+}
+
+.conteneur {
+    max-width: 700px;
+    margin:    0 auto;
+}
+
+.onglets {
+    display:       flex;
+    gap:           6px;
+    margin-bottom: 16px;
+    flex-wrap:     wrap;
+}
+
+.onglet-btn {
+    padding:       8px 16px;
+    border:        1.5px solid var(--border);
+    border-radius: var(--radius-md);
+    background:    var(--bg-surface);
+    color:         var(--text-muted);
+    cursor:        pointer;
+    font-family:   inherit;
+    font-size:     0.85rem;
+    font-weight:   600;
+    transition:    all 0.15s;
+}
+
+.onglet-btn:hover {
+    border-color: var(--accent);
+    color:        var(--text-primary);
+}
+
+.onglet-btn.actif {
+    background:   var(--accent);
+    border-color: var(--accent);
+    color:        white;
+}
+
+.section-form {
+    display:       none;
+    background:    var(--bg-surface);
+    padding:       28px;
+    border-radius: var(--radius-xl);
+    border:        1px solid var(--border);
+}
+
+.section-form.active {
+    display: block;
+}
+
+label {
+    display:        block;
+    font-size:      0.75rem;
+    font-weight:    700;
+    color:          var(--text-dimmed);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin:         18px 0 6px;
+}
+
+.section-form label:first-child {
+    margin-top: 0;
+}
+
+input,
+textarea {
+    width:       100%;
+    padding:     10px 13px;
+    border:      1.5px solid var(--border);
+    border-radius: var(--radius-md);
+    font-family: inherit;
+    font-size:   0.875rem;
+    color:       var(--text-primary);
+    background:  var(--bg-base);
+    outline:     none;
+    transition:  border-color 0.2s, box-shadow 0.2s;
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: var(--text-ghost);
+}
+
+input:focus,
+textarea:focus {
+    border-color: var(--accent);
+    box-shadow:   0 0 0 3px rgba(79, 142, 247, 0.12);
+}
+
+textarea {
+    height:  80px;
+    resize:  vertical;
+}
+
+
+#zone-apercu {
+    display:               grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap:                   10px;
+    margin-top:            10px;
+}
+
+.apercu-item {
+    width:           80px;
+    height:          80px;
+    border-radius:   var(--radius-sm);
+    overflow:        hidden;
+    border:          1px solid var(--border);
+    background:      var(--bg-base);
+    display:         flex;
+    align-items:     center;
+    justify-content: center;
+}
+
+.apercu-item img {
+    width:      100%;
+    height:     100%;
+    object-fit: cover;
+}
+
+.apercu-item span {
+    font-size:   0.7rem;
+    font-weight: bold;
+    color:       var(--accent);
+}
+
+
+.btn {
+    width:         100%;
+    margin-top:    24px;
+    padding:       12px 20px;
+    border:        none;
+    border-radius: var(--radius-md);
+    cursor:        pointer;
+    font-family:   inherit;
+    font-weight:   600;
+    font-size:     0.9rem;
+    color:         white;
+    transition:    filter 0.2s, transform 0.1s;
+}
+
+.btn:hover  { filter:    brightness(1.1); }
+.btn:active { transform: scale(0.98); }
+
+.btn:disabled {
+    background: var(--border) !important;
+    color:      var(--text-dimmed);
+    cursor:     not-allowed;
+    filter:     none;
+}
+
+.btn-vert  { background: linear-gradient(135deg, var(--green),  var(--green-dark)); }
+.btn-bleu  { background: linear-gradient(135deg, var(--accent), var(--accent-dark)); }
+.btn-rouge { background: linear-gradient(135deg, var(--red),    var(--red-dark)); }
+
+
+.message {
+    margin-top:  14px;
+    text-align:  center;
+    font-weight: 600;
+    font-size:   0.875rem;
+    padding:     10px 14px;
+    border-radius: var(--radius-md);
+    display:     none;
+}
+
+.message.succes {
+    background: var(--green-bg);
+    color:      var(--green-text);
+    border:     1px solid var(--green-border);
+}
+
+.message.erreur {
+    background: var(--red-bg);
+    color:      var(--red-text);
+    border:     1px solid var(--red-border);
+}

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Corbeille</title>
+    <link rel="stylesheet" href="/templates/style/corbeille.css">
+
+</head>
+<body>
+
+    <header>
+        <a href="/">← Retour</a>
+        <h2>Corbeille</h2>
+        <!-- <div id="burger-btn">☰</div>
+        <div id="menu">
+            <a href="/">Accueil</a>
+            <a href="/admin">Gérer</a>
+            <a href="contact.html">Contact</a>
+        </div> -->
+    </header>
+
+    <div class="container">
+
+        <div class="toolbar">
+            <button class="btn-vider" onclick="viderCorbeille()">Vider la corbeille</button>
+        </div>
+
+        <div class="section-title">
+            <h3>Projets</h3>
+        </div>
+        <div id="project-list" class="item-list"></div>
+        <div id="empty-projects" class="empty-state" style="display:none;">
+            <p>Aucun projet en corbeille</p>
+        </div>
+
+        
+        <div class="section-title">
+            <h3>Technologies</h3>
+        </div>
+        <div id="tech-list" class="item-list"></div>
+        <div id="empty-tech" class="empty-state" style="display:none;">
+            <p>Aucune technologie en corbeille</p>
+        </div>
+
+    </div>
+
+    <div id="toast"></div>
+    <script src="/templates/script/corbeille.js"></script>
+
+</body>
+</html>

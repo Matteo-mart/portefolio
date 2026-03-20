@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio</title>
+    <link rel="stylesheet" href="/templates/style/home.css">
+    
+</head>
+<body>
+
+<header>
+    <h2>
+        <span class="logo-dot"></span>
+        <span class="logo-text">Portfolio</span>
+    </h2>
+    <div class="burger" onclick="document.getElementById('menu').classList.toggle('active')">
+        <div></div><div></div><div></div>
+    </div>
+    <div class="nav-menu" id="menu">
+        <a href="/admin">Gérer</a>
+        <a href="/corbeille">Corbeille</a>
+    </div>
+</header>
+
+<div class="container">
+
+    <div class="presentation">
+        <div class="presentation-avatar">
+             <img src="/templates/images/avatar.jpg" alt="Photo de profil" id="avatar-img">
+        </div>
+        <div class="presentation-content">
+            <h1 class="presentation-nom">Matteo Martinez</h1>
+            <span class="presentation-titre">Etudiant</span>
+            <p class="presentation-texte">A remplir</p>
+        </div>
+    </div>
+
+
+    <div class="section-header">
+        <h2>Projets Récents</h2>
+        <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+            <span class="badge-count" id="project-count">{{len .Projects}} projets</span>
+            <select class="sort-select" id="sort-select" onchange="sortProjects(this.value)">
+                <option value="default">Trier par…</option>
+                <option value="nom-asc">Nom A → Z</option>
+                <option value="nom-desc">Nom Z → A</option>
+            </select>
+            <button class="btn-select-mode" id="toggleSelectBtn" onclick="toggleSelectMode()">Sélectionner</button>
+        </div>
+    </div>
+    <div class="search-wrapper">
+        <input
+            type="text"
+            class="search-input"
+            id="project-search"
+            placeholder="Rechercher un projet, une technologie…"
+            oninput="filterProjects(this.value)"
+            autocomplete="off"
+        >
+        <button class="search-clear" id="project-search-clear" onclick="clearSearch('project')">x</button>
+    </div>
+
+    <div id="projectList">
+        {{range .Projects}}
+            <div class="project-card"
+                 data-id="{{index . "id"}}"
+                 data-titre="{{index . "titre"}}"
+                 data-tech="{{index . "technologie"}}"
+                 onclick="handleCardClick(this, event)">
+                <strong style="display:block; font-size:1.1rem; margin-bottom:5px;" class="card-titre">{{index . "titre"}}</strong>
+                <p style="font-size:0.85rem; color:#ff0000; margin:10px 0;" class="card-tech">{{index . "technologie"}}</p>
+                <a href="/project/{{index . "id"}}" style="color:#4f8ef7; text-decoration:none; font-size:0.8rem;" onclick="event.stopPropagation()">Aperçu →</a>
+            </div>
+        {{else}}
+            <p style="color:#ff0000; grid-column: 1/-1; text-align:center;">Aucun projet dans la base de donnée</p>
+        {{end}}
+        <p class="no-results" id="project-no-results">Aucun projet ne correspond à la recherche</p>
+    </div>
+
+    <div class="section-header" style="margin-top: 50px;">
+        <h2>Technologies</h2>
+        <div style="display:flex; gap:10px; align-items:center;">
+            <span class="badge-count" id="tech-count">{{len .Technologies}} outils</span>
+            <button class="btn-select-mode" id="toggleSelectTechBtn" onclick="toggleSelectTechMode()">Sélectionner</button>
+        </div>
+    </div>
+
+    <div class="search-wrapper">
+        <input
+            type="text"
+            class="search-input"
+            id="tech-search"
+            placeholder="Rechercher une technologie…"
+            oninput="filterTech(this.value)"
+            autocomplete="off"
+        >
+        <button class="search-clear" id="tech-search-clear" onclick="clearSearch('tech')">✕</button>
+    </div>
+
+    <div class="techno-grid" id="techno-grid">
+        {{range .Technologies}}
+        <div class="techno-card"
+             data-id="{{index . "id"}}"
+             data-nom="{{index . "nom"}}"
+             onclick="handleTechClick(this)">
+            {{if index . "icone"}}
+            <img class="techno-icon" src="{{index . "icone"}}" alt="icon">
+            {{else}}
+            <div style="width:24px; height:24px; background:#2a2d38; border-radius:4px;"></div>
+            {{end}}
+            <div>
+                <a href="{{index . "url_source"}}" target="_blank"
+                   style="color:#000000; text-decoration:none; font-size:0.9rem; font-weight:500;"
+                   class="tech-nom"
+                   onclick="event.stopPropagation()">
+                    {{index . "nom"}}
+                </a>
+                <span style="display:block; font-size:0.72rem; color:#5a5f7a; margin-top:2px;">ID : {{index . "id"}}</span>
+            </div>
+        </div>
+        {{else}}
+        <p style="color:#5a5f7a;">Aucune technologie configurée</p>
+        {{end}}
+        <p class="no-results" id="tech-no-results" style="grid-column:1/-1;">Aucune technologie ne correspond à la recherche</p>
+    </div>
+
+    <div class="footer-contact">
+        <a href="https://github.com/Matteo-mart" class="btn-github" target="_blank">GitHub - </a>
+        <a href="/contact.html" class="btn-github">Contact</a>
+    </div>
+</div>
+
+<div id="selection-bar">
+    <div style="font-weight:700;"><span id="sel-count-num">0</span> sélectionnés</div>
+    <button style="background:#da3633; border:none; color:white; padding:8px 15px; border-radius:6px; cursor:pointer;" onclick="moveSelectedToCorbeille()">Corbeille</button>
+    <button style="background:transparent; border:none; color:#8b8fa8; cursor:pointer;" onclick="cancelSelection()">Annuler</button>
+</div>
+<div id="selection-bar-tech">
+    <div style="font-weight:700;"><span id="sel-tech-count">0</span> sélectionné(s)</div>
+    <button style="background:#da3633; border:none; color:white; padding:8px 15px; border-radius:6px; cursor:pointer;" onclick="moveSelectedTechToCorbeille()">Corbeille</button>
+    <button style="background:transparent; border:none; color:#8b8fa8; cursor:pointer;" onclick="cancelTechSelection()">Annuler</button>
+</div>
+
+    <script src="/templates/script/home.js"></script>
+</body>
+</html>

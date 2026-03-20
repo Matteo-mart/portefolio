@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion</title>
+    <link rel="stylesheet" href="/templates/style/admin.css">
+    
+</head>
+<body>
+
+    <header>
+        <a href="/">← Retour</a>
+        <h2>Gestion</h2>
+        <!-- <div id="burger-btn">☰</div>
+        <nav id="menu-nav">
+            <a href="/">Accueil</a>
+            <a href="contact.html">Contact</a>
+            <a href="/corbeille">Corbeille</a>
+        </nav> -->
+    </header>
+
+    <div class="conteneur">
+
+        <div class="onglets">
+            <button class="onglet-btn actif" onclick="afficherSection('ajouter', this)">Ajouter un projet</button>
+            <button class="onglet-btn" onclick="afficherSection('technologies-add', this)">Ajouter une technologie</button>
+            <button class="onglet-btn"       onclick="afficherSection('modifier', this)">Modifier un projet</button>
+                        <button class="onglet-btn"       onclick="afficherSection('contact', this)">Modifier contact</button>
+            <button class="onglet-btn"       onclick="afficherSection('technologies', this)">Modifier Technologies</button>
+            <button class="onglet-btn"       onclick="afficherSection('supprimer', this)">Supprimer un projet</button>
+
+            
+        </div>
+
+
+        <!-- ajouter un projet -->
+        <div id="section-ajouter" class="section-form active">
+
+            <label>Titre</label>
+            <input type="text" id="aj-titre" placeholder="Mon super projet">
+
+            <label>Date</label>
+            <input type="date" id="aj-date">
+
+            <label>Description</label>
+            <textarea id="aj-description" placeholder="Courte description du projet..."></textarea>
+
+            <label>Technologies</label>
+            <input type="text" id="aj-tech" placeholder="Go, React, MySQL...">
+
+            <label>Explication</label>
+            <textarea id="aj-explication" placeholder="Comment ça fonctionne ?"></textarea>
+
+            <label>Problème</label>
+            <textarea id="aj-probleme" placeholder="Quel problème ce projet résout-il ?"></textarea>
+
+            <label>Solution</label>
+            <textarea id="aj-solution" placeholder="Comment le problème a été résolu..."></textarea>
+
+            <label>URL GitHub</label>
+            <input type="url" id="aj-url" placeholder="https://github.com/...">
+
+            <label>Fichiers (.jpg, .png, .pdf)</label>
+            <input type="file" id="aj-fichiers" accept=".jpg,.jpeg,.png,.pdf" multiple onchange="afficherApercu()">
+            <div id="zone-apercu"></div>
+
+            <button class="btn btn-vert" onclick="ajouterProjet()">Publier le projet</button>
+            <div id="msg-ajouter" class="message"></div>
+        </div>
+
+
+        <!-- modifier projet -->
+        <div id="section-modifier" class="section-form">
+
+            <label>ID du projet</label>
+            <input type="number" id="mod-id" placeholder="Ex: 3">
+
+            <label>Titre</label>
+            <input type="text" id="mod-titre">
+
+            <label>Description</label>
+            <input type="text" id="mod-description">
+
+            <label>Technologies</label>
+            <input type="text" id="mod-tech">
+
+            <label>Explication</label>
+            <textarea id="mod-explication"></textarea>
+
+            <label>Problème</label>
+            <textarea id="mod-probleme"></textarea>
+
+            <label>Solution</label>
+            <textarea id="mod-solution"></textarea>
+
+            <label>URL Source</label>
+            <input type="url" id="mod-url">
+
+            <button class="btn btn-bleu" onclick="modifierProjet()">Enregistrer les modifications</button>
+            <div id="msg-modifier" class="message"></div>
+        </div>
+
+
+        <!-- supprimer projet -->
+        <div id="section-supprimer" class="section-form">
+
+            <label>ID du projet à supprimer</label>
+            <input type="number" id="sup-id" placeholder="Ex: 5">
+
+            <button class="btn btn-rouge" onclick="supprimerProjet()">Supprimer définitivement</button>
+            <div id="msg-supprimer" class="message"></div>
+        </div>
+
+
+        <!-- Modifier contact -->
+        <div id="section-contact" class="section-form">
+
+            <label>ID du contact</label>
+            <input type="text" id="ct-id" placeholder="ID requis">
+
+            <label>Téléphone</label>
+            <input type="text" id="ct-telephone" placeholder="06 00 00 00 00">
+
+            <label>Email</label>
+            <input type="email" id="ct-email" placeholder="email@exemple.com">
+
+            <label>LinkedIn</label>
+            <input type="url" id="ct-linkedin" placeholder="https://linkedin.com/in/...">
+
+            <label>GitHub</label>
+            <input type="url" id="ct-github" placeholder="https://github.com/...">
+
+            <button class="btn btn-bleu" onclick="modifierContact()">Mettre à jour le contact</button>
+            <div id="msg-contact" class="message"></div>
+        </div>
+
+        <!-- Modifier technologies -->
+        <div id="section-technologies" class="section-form">
+
+            <label>ID de la technologie</label>
+            <input type="text" id="tech-id" placeholder="ID requis">
+
+            <label>nom</label>
+            <input type="text" id="ct-nom" placeholder="...">
+
+            <label>Icone</label>
+            <input type="icone" id="ct-icone" placeholder="..">
+            
+            <label>Url</label>
+            <input type="url" id="ct-url_source" placeholder="https://...com"> 
+
+            <button class="btn btn-bleu" onclick="modifierTechnologie()">Mettre à jour la technologie</button>
+            <div id="msg-technologies" class="message"></div>
+        </div>
+
+        <!-- ajouter une technologies -->
+        <div id="section-technologies-add" class="section-form">
+
+            <label>Nom</label>
+            <input type="text" id="add-tech-nom" placeholder="Ex: Go, React...">
+
+            <label>Icône (URL)</label>
+            <input type="url" id="add-tech-icone" placeholder="https://cdn.../go-original.svg">
+
+            <label>URL Source</label>
+            <input type="url" id="add-tech-url" placeholder="https://golang.org">
+
+            <button class="btn btn-vert" onclick="ajouterTechnologie()">Ajouter la technologie</button>
+            <div id="msg-add-tech" class="message"></div>
+        </div>
+
+    </div>
+    <script src="/templates/script/admin.js"></script>
+</body>
+</html>
