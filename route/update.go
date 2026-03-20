@@ -3,10 +3,14 @@ package route
 import (
 	"encoding/json"
 	"html/template"
+	"io"
 	"log"
 	"net/http"
+	"os"
 	"portefolio/mariadb"
 	"portefolio/models"
+
+	"github.com/gorilla/mux"
 )
 
 func HandleUpdateContact(w http.ResponseWriter, r *http.Request) {
@@ -50,7 +54,7 @@ func HandleContact(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data, err := mariadb.GetContactInfo()
+	data, err := mariadb.GetAllContact()
 	if err != nil {
 		http.Error(w, "Erreur base de données", http.StatusInternalServerError)
 		return
@@ -89,4 +93,61 @@ func HandleUpdateTechnologies(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]string{"message": "Mise à jour réussie"})
+}
+
+func HandleUpload(w http.ResponseWriter, r *http.Request) {
+	r.ParseMultipartForm(5 << 20)
+	file, handler, err := r.FormFile("myImage")
+	if err != nil {
+		http.Error(w, "Erreur lors de la récupération du fichier", 400)
+		return
+	}
+	defer file.Close()
+
+	filePath := "./templates/uploads/" + handler.Filename
+	dst, err := os.Create(filePath)
+	if err != nil {
+		http.Error(w, "Erreur lors de la sauvegarde", 500)
+		return
+	}
+	defer dst.Close()
+
+	if _, err := io.Copy(dst, file); err != nil {
+		http.Error(w, "Erreur lors de l écriture", 500)
+		return
+	}
+
+}
+
+func HandleUpdateProjet(w http.ResponseWriter, r *http.Request) {
+
+	vars := mux.Vars(r)
+	id := vars["id"]
+
+	if models.SetupCORS(w, r) {
+		return
+	}
+	if r.Method == "OPTIONS" {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
+	var c models.ProjetUpdate
+	err := json.NewDecoder(r.Body).Decode(&c)
+
+	if err != nil {
+		http.Error(w, "Données invalides", http.StatusBadRequest)
+		return
+	}
+
+	err = mariadb.UpdateProjet(id, c.Titre, c.Description, c.Technologie, c.Explication, c.Probleme, c.Solution, c.UrlSource)
+	if err != nil {
+		log.Printf("id pour modif: %s", id)
+		log.Printf("Erreur SQL lors de la mise à jour de [%s] : %v", id, err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+
 }

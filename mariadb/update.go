@@ -56,6 +56,25 @@ func UpdateProjet(id string, Titre string, Description string, Technologie strin
 }
 
 /*
+modifier technologies
+*/
+func UpdateTechnologies(id int, nom string, icone string, url_source string) error {
+	query := `
+        UPDATE technologies
+        SET nom = ?, icone = ?, url_source = ?
+        WHERE id = ?`
+	result, err := DB.Exec(query, nom, icone, url_source, id)
+	if err != nil {
+		return err
+	}
+	rowsAffected, _ := result.RowsAffected()
+	if rowsAffected == 0 {
+		return fmt.Errorf("aucune technologie trouvée avec l'id '%d'", id)
+	}
+	return nil
+}
+
+/*
 Ajouter une image à un projet
 */
 func AddImageToProject(ID int, imagePath string) error {
@@ -74,24 +93,4 @@ func InsertProject(titre, date, desc, tech, expl, prob, sol, url string) error {
 
 	_, err := DB.Exec(query, titre, date, desc, tech, expl, prob, sol, url)
 	return err
-}
-
-/*
-Supprimer un projet
-*/
-func DeleteProject(id string) error {
-	query := "DELETE FROM project WHERE id = ?"
-
-	result, err := DB.Exec(query, id)
-	if err != nil {
-		return err
-	}
-
-	rowsAffected, _ := result.RowsAffected()
-
-	if rowsAffected == 0 {
-		return fmt.Errorf("aucun projet trouvé avec le id '%s'", id)
-	}
-
-	return nil
 }

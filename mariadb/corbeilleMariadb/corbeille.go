@@ -1,4 +1,4 @@
-package mariadb
+package corbeillemariadb
 
 import (
 	"fmt"
@@ -22,32 +22,6 @@ func GetCorbeilleImages(projectID int) ([]string, error) {
 		}
 	}
 	return urls, nil
-}
-
-/*
-Sélectionne le 'project_id' via son id pour le supprimer définitivement
-*/
-func DeleteFromCorbeille(id string) error {
-	var projectID int
-	err := DB.QueryRow("SELECT project_id FROM corbeille WHERE id = ?", id).Scan(&projectID)
-	if err != nil {
-		return fmt.Errorf("entrée introuvable : %v", err)
-	}
-
-	_, err = DB.Exec("DELETE FROM project_image WHERE project_id = ?", projectID)
-	if err != nil {
-		return fmt.Errorf("erreur suppression images : %v", err)
-	}
-
-	result, err := DB.Exec("DELETE FROM corbeille WHERE id = ?", id)
-	if err != nil {
-		return err
-	}
-	rows, _ := result.RowsAffected()
-	if rows == 0 {
-		return fmt.Errorf("aucune entrée trouvée avec l'id '%s'", id)
-	}
-	return nil
 }
 
 /*
@@ -80,67 +54,6 @@ func MoveToCorbeille(id string) error {
 	}
 
 	_, err = DB.Exec("DELETE FROM project WHERE id = ?", id)
-	return err
-}
-
-/*
-Sélectionne un projet à restaurer via son id depuis la corbeille
-*/
-func RestoreFromCorbeille(id string) error {
-	var projectID int
-	var titre, technologie, url_source string
-	var date_creation, description, explication, probleme, solution string
-
-	err := DB.QueryRow("SELECT project_id, titre, date_creation, description, technologie, explication, probleme, solution, url_source FROM corbeille WHERE id = ?", id).Scan(
-		&projectID, &titre, &date_creation, &description, &technologie, &explication, &probleme, &solution, &url_source)
-	if err != nil {
-		return fmt.Errorf("entrée introuvable en corbeille : %v", err)
-	}
-
-	_, err = DB.Exec(`INSERT INTO project 
-        (id, titre, date_creation, description, technologie, explication, probleme, solution, url_source) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-		projectID, titre, date_creation, description, technologie, explication, probleme, solution, url_source)
-	if err != nil {
-		return fmt.Errorf("erreur lors de la restauration : %v", err)
-	}
-
-	_, err = DB.Exec(`
-        INSERT INTO project_image (project_id, url, mime_type)
-        SELECT project_id, url, mime_type FROM corbeille_image WHERE project_id = ?`, projectID)
-	if err != nil {
-		return fmt.Errorf("erreur restauration images : %v", err)
-	}
-
-	DB.Exec("DELETE FROM corbeille_image WHERE project_id = ?", projectID)
-	_, err = DB.Exec("DELETE FROM corbeille WHERE id = ?", id)
-	return err
-}
-
-/*
-Supprimer tous les projets qui se trouvent dans la corbeille
-*/
-func ViderCorbeille() error {
-	rows, err := DB.Query("SELECT project_id FROM corbeille")
-	if err != nil {
-		return err
-	}
-	defer rows.Close()
-
-	var ids []int
-	for rows.Next() {
-		var pid int
-		if err := rows.Scan(&pid); err != nil {
-			return err
-		}
-		ids = append(ids, pid)
-	}
-
-	for _, pid := range ids {
-		DB.Exec("DELETE FROM project_image WHERE project_id = ?", pid)
-	}
-
-	_, err = DB.Exec("DELETE FROM corbeille")
 	return err
 }
 
@@ -196,44 +109,6 @@ func MoveToCorbeilleTech(id int) error {
 
 	_, err = DB.Exec("DELETE FROM technologies WHERE id = ?", id)
 	return err
-}
-
-/*
-Permet de restaurer les technologies depuis la corbeille
-*/
-func RestoreFromCorbeilleTech(id int) error {
-	var techID int
-	var nom, icone, url_source string
-
-	err := DB.QueryRow("SELECT tech_id, nom, icone, url_source FROM corbeille_technologies WHERE id = ?", id).Scan(
-		&techID, &nom, &icone, &url_source)
-	if err != nil {
-		return fmt.Errorf("entrée introuvable en corbeille : %v", err)
-	}
-
-	_, err = DB.Exec(`INSERT INTO technologies (id, nom, icone, url_source) VALUES (?, ?, ?, ?)`,
-		techID, nom, icone, url_source)
-	if err != nil {
-		return fmt.Errorf("erreur restauration : %v", err)
-	}
-
-	_, err = DB.Exec("DELETE FROM corbeille_technologies WHERE id = ?", id)
-	return err
-}
-
-/*
-Permet de supprimer les technologies depuis la corbeille
-*/
-func DeleteFromCorbeilleTech(id int) error {
-	result, err := DB.Exec("DELETE FROM corbeille_technologies WHERE id = ?", id)
-	if err != nil {
-		return err
-	}
-	rows, _ := result.RowsAffected()
-	if rows == 0 {
-		return fmt.Errorf("aucune entrée trouvée avec l'id '%d'", id)
-	}
-	return nil
 }
 
 /*
