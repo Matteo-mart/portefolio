@@ -1,101 +1,55 @@
-const burgerBtn = document.getElementById('burger-btn');
-const menuNav   = document.getElementById('menu-nav');
-
-burgerBtn.addEventListener('click', function (event) {
-    event.stopPropagation();
-    menuNav.classList.toggle('actif');
-});
-
-document.addEventListener('click', function () {
-    menuNav.classList.remove('actif');
-});
-
 function afficherSection(nomSection, ongletClique) {
-    document.querySelectorAll('.section-form').forEach(function (section) {
-        section.classList.remove('active');
-    });
-
-    document.querySelectorAll('.onglet-btn').forEach(function (onglet) {
-        onglet.classList.remove('actif');
-    });
-
+    document.querySelectorAll('.section-form').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.onglet-btn').forEach(o => o.classList.remove('actif'));
     document.getElementById('section-' + nomSection).classList.add('active');
     ongletClique.classList.add('actif');
 }
 
 function afficherApercu() {
-    const zoneApercu = document.getElementById('zone-apercu');
-    const fichiers   = document.getElementById('aj-fichiers').files;
+    const zone    = document.getElementById('zone-apercu');
+    zone.innerHTML = '';
 
-    zoneApercu.innerHTML = '';
-
-    Array.from(fichiers).forEach(function (fichier) {
+    Array.from(document.getElementById('aj-fichiers').files).forEach(fichier => {
         const div     = document.createElement('div');
         div.className = 'apercu-item';
 
         if (fichier.type === 'application/pdf') {
             div.innerHTML = '<span>PDF</span>';
         } else {
-            const lecteur    = new FileReader();
-            lecteur.onload   = function (e) {
-                div.innerHTML = '<img src="' + e.target.result + '" alt="aperçu">';
-            };
-            lecteur.readAsDataURL(fichier);
+            const reader   = new FileReader();
+            reader.onload  = e => { div.innerHTML = `<img src="${e.target.result}" alt="aperçu">`; };
+            reader.readAsDataURL(fichier);
         }
-
-        zoneApercu.appendChild(div);
+        zone.appendChild(div);
     });
 }
 
 function afficherMessage(idDiv, texte, succes) {
-    const div         = document.getElementById(idDiv);
-    div.textContent   = texte;
-    div.className     = 'message ' + (succes ? 'succes' : 'erreur');
+    const div       = document.getElementById(idDiv);
+    div.textContent = texte;
+    div.className   = 'message ' + (succes ? 'succes' : 'erreur');
     div.style.display = 'block';
 }
 
 async function ajouterProjet() {
-    const donnees = new FormData();
-    donnees.append('title',       document.getElementById('aj-titre').value);
-    donnees.append('date',        document.getElementById('aj-date').value);
-    donnees.append('description', document.getElementById('aj-description').value);
-    donnees.append('technologie', document.getElementById('aj-tech').value);
-    donnees.append('explication', document.getElementById('aj-explication').value);
-    donnees.append('probleme',    document.getElementById('aj-probleme').value);
-    donnees.append('solution',    document.getElementById('aj-solution').value);
-    donnees.append('url_source',  document.getElementById('aj-url').value);
+    const formData = new FormData();
+    const champs = ['titre','date','description','tech','explication','probleme','solution','url'];
+    const cles   = ['title','date','description','technologie','explication','probleme','solution','url_source'];
+    champs.forEach((c, i) => formData.append(cles[i], document.getElementById('aj-' + c).value));
 
-    const inputFichiers = document.getElementById('aj-fichiers');
-    for (let i = 0; i < inputFichiers.files.length; i++) {
-        donnees.append('image', inputFichiers.files[i]);
-    }
+    Array.from(document.getElementById('aj-fichiers').files)
+        .forEach(f => formData.append('image', f));
 
-    try {
-        const reponse = await fetch('/add-post', {
-            method: 'POST',
-            body:   donnees,
-        });
-
-        if (reponse.ok) {
-            window.location.href = '/';
-        } else {
-            const msgErreur = await reponse.text();
-            afficherMessage('msg-ajouter', 'Erreur : ' + msgErreur, false);
-        }
-    } catch (erreur) {
-        afficherMessage('msg-ajouter', 'Connexion impossible : ' + erreur.message, false);
-    }
+    const { ok, data } = await apiFetch('/add-post', { method: 'POST', body: formData });
+    if (ok) window.location.href = '/';
+    else afficherMessage('msg-ajouter', 'Erreur : ' + data, false);
 }
 
 async function modifierProjet() {
-    const idProjet = document.getElementById('mod-id').value;
+    const id = document.getElementById('mod-id').value;
+    if (!id) { afficherMessage('msg-modifier', 'Saisir un ID', false); return; }
 
-    if (!idProjet) {
-        afficherMessage('msg-modifier', 'Saisir un ID', false);
-        return;
-    }
-
-    const donnees = {
+    const body = {
         titre:       document.getElementById('mod-titre').value,
         description: document.getElementById('mod-description').value,
         tech:        document.getElementById('mod-tech').value,
@@ -105,148 +59,88 @@ async function modifierProjet() {
         url_source:  document.getElementById('mod-url').value,
     };
 
-    try {
-        const reponse = await fetch('/update-projet/' + idProjet, {
-            method:  'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body:    JSON.stringify(donnees),
-        });
-
-        if (reponse.ok) {
-            window.location.href = '/';
-        } else {
-            const msgErreur = await reponse.text();
-            afficherMessage('msg-modifier', 'Erreur : ' + msgErreur, false);
-        }
-    } catch (erreur) {
-        afficherMessage('msg-modifier', 'Connexion impossible : ' + erreur.message, false);
-    }
+    const { ok, data } = await apiFetch('/update-projet/' + id, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+    });
+    if (ok) window.location.href = '/';
+    else afficherMessage('msg-modifier', 'Erreur : ' + data, false);
 }
 
 async function supprimerProjet() {
-    const idProjet = document.getElementById('sup-id').value;
+    const id = document.getElementById('sup-id').value;
+    if (!id) { afficherMessage('msg-supprimer', 'Saisir un ID', false); return; }
+    if (!confirm(`Voulez-vous vraiment supprimer le projet n°${id} ?`)) return;
 
-    if (!idProjet) {
-        afficherMessage('msg-supprimer', 'Saisir un ID', false);
-        return;
-    }
-
-    const confirme = confirm('Voulez-vous vraiment supprimer le projet n°' + idProjet + ' ?');
-    if (!confirme) return;
-
-    try {
-        const reponse = await fetch('/delete-project?id=' + idProjet, {
-            method: 'DELETE',
-        });
-
-        if (reponse.ok) {
-            document.getElementById('sup-id').value = '';
-        } else {
-            afficherMessage('msg-supprimer', 'Erreur lors de la suppression', false);
-        }
-    } catch (erreur) {
-        afficherMessage('msg-supprimer', 'Connexion impossible : ' + erreur.message, false);
-    }
+    const { ok } = await apiFetch(`/delete-project?id=${id}`, { method: 'DELETE' });
+    if (ok) document.getElementById('sup-id').value = '';
+    else afficherMessage('msg-supprimer', 'Erreur lors de la suppression', false);
 }
 
 async function modifierContact() {
-    const idContact = document.getElementById('ct-id').value;
+    const id = document.getElementById('ct-id').value;
+    if (!id) { afficherMessage('msg-contact', 'Veuillez saisir un ID', false); return; }
 
-    if (!idContact) {
-        afficherMessage('msg-contact', 'Veuillez saisir un ID', false);
-        return;
-    }
-
-    const donnees = {
-        id:        idContact,
+    const body = {
+        id,
         telephone: document.getElementById('ct-telephone').value,
         email:     document.getElementById('ct-email').value,
         linkedin:  document.getElementById('ct-linkedin').value,
         github:    document.getElementById('ct-github').value,
     };
 
-    try {
-        const reponse = await fetch('/update-contact', {
-            method:  'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body:    JSON.stringify(donnees),
-        });
-
-        if (reponse.ok) {
-            window.location.href = '/';
-        } else {
-            const msgErreur = await reponse.text();
-            afficherMessage('msg-contact', 'Erreur : ' + msgErreur, false);
-        }
-    } catch (erreur) {
-        afficherMessage('msg-contact', 'Connexion impossible : ' + erreur.message, false);
-    }
+    const { ok, data } = await apiFetch('/update-contact', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+    });
+    if (ok) window.location.href = '/';
+    else afficherMessage('msg-contact', 'Erreur : ' + data, false);
 }
 
 async function modifierTechnologie() {
-    const idTechnologies = document.getElementById('tech-id').value;
+    const id = document.getElementById('tech-id').value;
+    if (!id) { afficherMessage('msg-technologies', 'Veuillez saisir un ID', false); return; }
 
-    if (!idTechnologies) {
-        afficherMessage('msg-technologies', 'Veuillez saisir un ID', false);
-        return;
-    }
-
-    const donnees = {
-        id:         parseInt(idTechnologies, 10),
+    const body = {
+        id:         parseInt(id, 10),
         nom:        document.getElementById('ct-nom').value,
         icone:      document.getElementById('ct-icone').value,
         url_source: document.getElementById('ct-url_source').value,
     };
 
-    try {
-        const reponse = await fetch('/update-technologies/' + idTechnologies, {
-            method:  'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body:    JSON.stringify(donnees),
-        });
-
-        if (reponse.ok) {
-            window.location.href = '/';
-        } else {
-            const msgErreur = await reponse.text();
-            afficherMessage('msg-technologies', 'Erreur : ' + msgErreur, false);
-        }
-    } catch (erreur) {
-        afficherMessage('msg-technologies', 'Connexion impossible : ' + erreur.message, false);
-    }
+    const { ok, data } = await apiFetch('/update-technologies/' + id, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+    });
+    if (ok) window.location.href = '/';
+    else afficherMessage('msg-technologies', 'Erreur : ' + data, false);
 }
 
 async function ajouterTechnologie() {
     const nom = document.getElementById('add-tech-nom').value.trim();
+    if (!nom) { afficherMessage('msg-add-tech', 'Le nom est requis', false); return; }
 
-    if (!nom) {
-        afficherMessage('msg-add-tech', 'Le nom est requis', false);
-        return;
-    }
-
-    const donnees = {
-        nom:        nom,
+    const body = {
+        nom,
         icone:      document.getElementById('add-tech-icone').value.trim(),
         url_source: document.getElementById('add-tech-url').value.trim(),
     };
 
-    try {
-        const reponse = await fetch('/add-technologie', {
-            method:  'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body:    JSON.stringify(donnees),
-        });
+    const { ok, data } = await apiFetch('/add-technologie', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+    });
 
-        if (reponse.ok) {
-            afficherMessage('msg-add-tech', 'Technologie ajoutée !', true);
-            document.getElementById('add-tech-nom').value   = '';
-            document.getElementById('add-tech-icone').value = '';
-            document.getElementById('add-tech-url').value   = '';
-        } else {
-            const err = await reponse.text();
-            afficherMessage('msg-add-tech', 'Erreur : ' + err, false);
-        }
-    } catch (e) {
-        afficherMessage('msg-add-tech', 'Connexion impossible : ' + e.message, false);
+    if (ok) {
+        afficherMessage('msg-add-tech', 'Technologie ajoutée !', true);
+        ['add-tech-nom', 'add-tech-icone', 'add-tech-url'].forEach(id => {
+            document.getElementById(id).value = '';
+        });
+    } else {
+        afficherMessage('msg-add-tech', 'Erreur : ' + data, false);
     }
 }

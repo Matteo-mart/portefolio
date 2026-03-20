@@ -7,6 +7,7 @@ import (
 )
 
 func DefRoute(r *mux.Router) {
+
 	r.HandleFunc("/", HandleHome).Methods("GET")
 	r.HandleFunc("/contact.html", HandleContact).Methods("GET")
 	r.HandleFunc("/projet.html", HandleProjet).Methods("GET")
@@ -20,6 +21,8 @@ func DefRoute(r *mux.Router) {
 	r.PathPrefix("/uploads/").Handler(
 		http.StripPrefix("/uploads/", http.FileServer(http.Dir("./templates/uploads"))),
 	)
+
+	// CORBEILLE
 	r.HandleFunc("/move-to-corbeille", HandleMoveToCorbeille).Methods("POST")
 	r.HandleFunc("/corbeille-list", HandleCorbeilleList).Methods("GET")
 	r.HandleFunc("/corbeille-delete", HandleCorbeilleDelete).Methods("DELETE")
@@ -30,7 +33,6 @@ func DefRoute(r *mux.Router) {
 	r.HandleFunc("/update-contact", HandleUpdateContact).Methods("PUT", "OPTIONS")
 	r.HandleFunc("/update-projet/{id}", HandleUpdateProjet).Methods("PUT", "OPTIONS")
 	r.HandleFunc("/update-technologies/{id}", HandleUpdateTechnologies).Methods("PUT", "OPTIONS")
-
 	r.HandleFunc("/delete-technologie", HandleDeleteTechnologie).Methods("DELETE", "OPTIONS")
 	r.HandleFunc("/corbeille-tech", HandleGetCorbeilleTech).Methods("GET")
 	r.HandleFunc("/restore-tech", HandleRestoreCorbeilleTech).Methods("POST")

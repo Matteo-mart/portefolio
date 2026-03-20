@@ -1,5 +1,9 @@
 package mariadb
 
+/*
+Récupère tous les projets (titres et id) et
+et classe par date de creation
+*/
 func GetAllProjects() ([]map[string]interface{}, error) {
 	query := "SELECT id, titre FROM project ORDER BY date_creation DESC"
 	rows, err := DB.Query(query)

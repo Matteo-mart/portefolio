@@ -7,6 +7,10 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
+/*
+Func pour se connecter à la base de donnée
+et sélectionner la bonne database
+*/
 func Connection() error {
 	dsn := "matteo:matteo@tcp(127.0.0.1:3306)/portefolio"
 	var err error

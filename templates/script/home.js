@@ -1,212 +1,152 @@
-    let selectMode = false;
-    let selectedIds = new Set();
+let selectMode  = false;
+let selectedIds = new Set();
 
-    function showSection(id) {
-        const sect = document.getElementById(id);
-        const isVisible = sect.style.display === 'block';
-        document.querySelectorAll('.form-section').forEach(s => s.style.display = 'none');
-        sect.style.display = isVisible ? 'none' : 'block';
-        document.getElementById('menu').classList.remove('active');
+function toggleSelectMode() {
+    selectMode = !selectMode;
+    document.getElementById('toggleSelectBtn').classList.toggle('active');
+    if (!selectMode) cancelSelection();
+}
+
+function handleCardClick(card) {
+    if (!selectMode) return;
+    toggleSelection(card, selectedIds, 'selection-bar', 'sel-count-num');
+}
+
+function cancelSelection() {
+    clearSelection(selectedIds, '.project-card', 'selection-bar', 'sel-count-num');
+}
+
+async function moveSelectedToCorbeille() {
+    for (const id of selectedIds) {
+        await apiFetch(`/move-to-corbeille?id=${id}`, { method: 'POST' });
     }
+    location.reload();
+}
 
-    function toggleSelectMode() {
-        selectMode = !selectMode;
-        const btn = document.getElementById('toggleSelectBtn');
-        btn.classList.toggle('active');
-        if(!selectMode) cancelSelection();
+let selectTechMode  = false;
+let selectedTechIds = new Set();
+
+function toggleSelectTechMode() {
+    selectTechMode = !selectTechMode;
+    document.getElementById('toggleSelectTechBtn').classList.toggle('active');
+    if (!selectTechMode) cancelTechSelection();
+}
+
+function handleTechClick(card) {
+    if (!selectTechMode) return;
+    toggleSelection(card, selectedTechIds, 'selection-bar-tech', 'sel-tech-count');
+}
+
+function cancelTechSelection() {
+    clearSelection(selectedTechIds, '.techno-card', 'selection-bar-tech', 'sel-tech-count');
+}
+
+async function moveSelectedTechToCorbeille() {
+    for (const id of selectedTechIds) {
+        await apiFetch(`/delete-technologie?id=${id}`, { method: 'DELETE' });
     }
+    location.reload();
+}
 
-    function handleCardClick(card, event) {
-        if (!selectMode) return;
-        const id = card.dataset.id;
-        if (selectedIds.has(id)) {
-            selectedIds.delete(id);
-            card.classList.remove('selected');
+function toggleSelection(card, set, barId, countId) {
+    const id = card.dataset.id;
+    if (set.has(id)) { set.delete(id); card.classList.remove('selected'); }
+    else             { set.add(id);    card.classList.add('selected'); }
+    updateBar(set, barId, countId);
+}
+
+function clearSelection(set, selector, barId, countId) {
+    set.clear();
+    document.querySelectorAll(selector).forEach(c => c.classList.remove('selected'));
+    updateBar(set, barId, countId);
+}
+
+function updateBar(set, barId, countId) {
+    document.getElementById(countId).textContent = set.size;
+    document.getElementById(barId).classList.toggle('visible', set.size > 0);
+}
+
+function highlight(text, query) {
+    if (!query) return text;
+    const esc = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return text.replace(new RegExp(`(${esc})`, 'gi'), '<mark>$1</mark>');
+}
+
+function filterCards({ cards, query, clearBtnId, noResultsId, countId, countLabel, getTitles }) {
+    const q         = query.trim().toLowerCase();
+    let   visible   = 0;
+
+    document.getElementById(clearBtnId).classList.toggle('visible', q.length > 0);
+
+    cards.forEach(card => {
+        const { main, secondary } = getTitles(card);
+        const match = main.toLowerCase().includes(q) || (secondary || '').toLowerCase().includes(q);
+
+        card.classList.toggle('hidden', !match);
+        if (match) {
+            visible++;
+            if (card.querySelector('.card-titre'))
+                card.querySelector('.card-titre').innerHTML = highlight(main, q);
+            if (secondary && card.querySelector('.card-tech'))
+                card.querySelector('.card-tech').innerHTML  = highlight(secondary, q);
+            if (card.querySelector('.tech-nom'))
+                card.querySelector('.tech-nom').innerHTML   = highlight(main, q);
         } else {
-            selectedIds.add(id);
-            card.classList.add('selected');
+            if (card.querySelector('.card-titre')) card.querySelector('.card-titre').innerHTML = main;
+            if (card.querySelector('.card-tech'))  card.querySelector('.card-tech').innerHTML  = secondary || '';
+            if (card.querySelector('.tech-nom'))   card.querySelector('.tech-nom').innerHTML   = main;
         }
-        updateBar();
+    });
+
+    document.getElementById(noResultsId).classList.toggle('visible', visible === 0 && q.length > 0);
+    document.getElementById(countId).textContent = `${visible} ${countLabel}`;
+}
+
+function filtrerProjects(query) {
+    filterCards({
+        cards:       Array.from(document.querySelectorAll('.project-card[data-id]')),
+        query,
+        clearBtnId:  'project-search-clear',
+        noResultsId: 'project-no-results',
+        countId:     'project-count',
+        countLabel:  'projet(s)',
+        getTitles:   c => ({ main: c.dataset.titre || '', secondary: c.dataset.tech || '' }),
+    });
+}
+
+function filterTech(query) {
+    filterCards({
+        cards:       Array.from(document.querySelectorAll('.techno-card[data-id]')),
+        query,
+        clearBtnId:  'tech-search-clear',
+        noResultsId: 'tech-no-results',
+        countId:     'tech-count',
+        countLabel:  'outil(s)',
+        getTitles:   c => ({ main: c.dataset.nom || '' }),
+    });
+}
+
+function clearSearch(type) {
+    const id    = type === 'project' ? 'project-search' : 'tech-search';
+    const input = document.getElementById(id);
+    input.value = '';
+    type === 'project' ? filtrerProjects('') : filterTech('');
+    input.focus();
+}
+
+function sortProjects(criteria) {
+    const list  = document.getElementById('projectList');
+    const cards = Array.from(list.querySelectorAll('.project-card[data-id]'));
+    const noRes = list.querySelector('.no-results');
+
+    const comparators = {
+        'nom-asc':  (a, b) => a.dataset.titre.localeCompare(b.dataset.titre),
+        'nom-desc': (a, b) => b.dataset.titre.localeCompare(a.dataset.titre),
+        'tech-asc': (a, b) => a.dataset.tech.localeCompare(b.dataset.tech),
+        'tech-desc':(a, b) => b.dataset.tech.localeCompare(a.dataset.tech),
+    };
+
+    if (comparators[criteria]) {
+        cards.sort(comparators[criteria]).forEach(c => list.insertBefore(c, noRes));
     }
-
-    function updateBar() {
-        const bar = document.getElementById('selection-bar');
-        document.getElementById('sel-count-num').textContent = selectedIds.size;
-        bar.classList.toggle('visible', selectedIds.size > 0);
-    }
-
-    function cancelSelection() {
-        selectedIds.clear();
-        document.querySelectorAll('.project-card').forEach(c => c.classList.remove('selected'));
-        updateBar();
-    }
-
-    function filterProjects(query) {
-        const q = query.trim().toLowerCase();
-        const cards = document.querySelectorAll('.project-card[data-id]');
-        const clearBtn = document.getElementById('project-search-clear');
-        const noResults = document.getElementById('project-no-results');
-        let visible = 0;
-
-        clearBtn.classList.toggle('visible', q.length > 0);
-
-        cards.forEach(card => {
-            const titre = card.dataset.titre || '';
-            const tech  = card.dataset.tech  || '';
-            const match = titre.toLowerCase().includes(q) || tech.toLowerCase().includes(q);
-
-            card.classList.toggle('hidden', !match);
-            if (match) {
-                visible++;
-                // Highlight
-                card.querySelector('.card-titre').innerHTML = highlight(titre, q);
-                card.querySelector('.card-tech').innerHTML  = highlight(tech,  q);
-            } else {
-                card.querySelector('.card-titre').innerHTML = titre;
-                card.querySelector('.card-tech').innerHTML  = tech;
-            }
-        });
-
-        noResults.classList.toggle('visible', visible === 0 && q.length > 0);
-        document.getElementById('project-count').textContent = `${visible} projet(s)`;
-    }
-
-    function filterTech(query) {
-        const q = query.trim().toLowerCase();
-        const cards = document.querySelectorAll('.techno-card[data-id]');
-        const clearBtn = document.getElementById('tech-search-clear');
-        const noResults = document.getElementById('tech-no-results');
-        let visible = 0;
-
-        clearBtn.classList.toggle('visible', q.length > 0);
-
-        cards.forEach(card => {
-            const nom = card.dataset.nom || '';
-            const match = nom.toLowerCase().includes(q);
-
-            card.classList.toggle('hidden', !match);
-            if (match) {
-                visible++;
-                const link = card.querySelector('.tech-nom');
-                if (link) link.innerHTML = highlight(nom, q);
-            } else {
-                const link = card.querySelector('.tech-nom');
-                if (link) link.innerHTML = card.dataset.nom;
-            }
-        });
-
-        noResults.classList.toggle('visible', visible === 0 && q.length > 0);
-        document.getElementById('tech-count').textContent = `${visible} outil(s)`;
-    }
-
-    function highlight(text, query) {
-        if (!query) return text;
-        const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        return text.replace(new RegExp(`(${escaped})`, 'gi'), '<mark>$1</mark>');
-    }
-
-    function clearSearch(type) {
-        if (type === 'project') {
-            const input = document.getElementById('project-search');
-            input.value = '';
-            filterProjects('');
-            input.focus();
-        } else {
-            const input = document.getElementById('tech-search');
-            input.value = '';
-            filterTech('');
-            input.focus();
-        }
-    }
-
-    async function sendData() {
-        const formData = new FormData();
-        formData.append("title", document.getElementById('title').value);
-        formData.append("date", document.getElementById('date_creation').value);
-        formData.append("description", document.getElementById('desc').value);
-        formData.append("technologie", document.getElementById('tech').value);
-        formData.append("explication", document.getElementById('expl').value);
-        
-        const files = document.getElementById('image').files;
-        for (let i = 0; i < files.length; i++) formData.append("image", files[i]);
-
-        const res = await fetch('/add-post', { method: 'POST', body: formData });
-        if (res.ok) location.reload();
-    }
-
-    async function deleteData() {
-        const id = document.getElementById('delete-id').value;
-        const res = await fetch(`/delete-project?id=${id}`, { method: 'DELETE' });
-        if (res.ok) location.reload();
-    }
-
-    async function moveSelectedToCorbeille() {
-        for (let id of selectedIds) {
-            await fetch(`/move-to-corbeille?id=${id}`, { method: 'POST' });
-        }
-        location.reload();
-    }
-
-    let selectTechMode = false;
-    let selectedTechIds = new Set();
-
-    function toggleSelectTechMode() {
-        selectTechMode = !selectTechMode;
-        const btn = document.getElementById('toggleSelectTechBtn');
-        btn.classList.toggle('active');
-        if (!selectTechMode) cancelTechSelection();
-    }
-
-    function handleTechClick(card) {
-        if (!selectTechMode) return;
-        const id = card.dataset.id;
-        if (selectedTechIds.has(id)) {
-            selectedTechIds.delete(id);
-            card.classList.remove('selected');
-        } else {
-            selectedTechIds.add(id);
-            card.classList.add('selected');
-        }
-        updateTechBar();
-    }
-
-    function updateTechBar() {
-        const bar = document.getElementById('selection-bar-tech');
-        document.getElementById('sel-tech-count').textContent = selectedTechIds.size;
-        bar.classList.toggle('visible', selectedTechIds.size > 0);
-    }
-
-    function cancelTechSelection() {
-        selectedTechIds.clear();
-        document.querySelectorAll('.techno-card').forEach(c => c.classList.remove('selected'));
-        updateTechBar();
-    }
-
-    async function moveSelectedTechToCorbeille() {
-        for (let id of selectedTechIds) {
-            await fetch(`/delete-technologie?id=${id}`, { method: 'DELETE' });
-        }
-        location.reload();
-    }
-
-    function sortProjects(criteria) {
-        const list = document.getElementById('projectList');
-        const cards = Array.from(list.querySelectorAll('.project-card[data-id]'));
-
-        cards.sort((a, b) => {
-            switch (criteria) {
-                case 'nom-asc':
-                    return a.dataset.titre.localeCompare(b.dataset.titre);
-                case 'nom-desc':
-                    return b.dataset.titre.localeCompare(a.dataset.titre);
-                case 'tech-asc':
-                    return a.dataset.tech.localeCompare(b.dataset.tech);
-                case 'tech-desc':
-                    return b.dataset.tech.localeCompare(a.dataset.tech);
-                default:
-                    return 0;
-            }
-        });
-
-        cards.forEach(card => list.insertBefore(card, list.querySelector('.no-results')));
-    }   
+}

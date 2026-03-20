@@ -7,6 +7,9 @@ import (
 
 var DB *sql.DB
 
+/*
+Modifier contact via id
+*/
 func UpdateContact(id string, telephone string, email string, linkedin string, github string) error {
 
 	query := `
@@ -28,6 +31,9 @@ func UpdateContact(id string, telephone string, email string, linkedin string, g
 	return nil
 }
 
+/*
+Modifier projet via id
+*/
 func UpdateProjet(id string, Titre string, Description string, Technologie string, Explication string, Probleme string, Solution string, UrlSource string) error {
 
 	query := `
@@ -49,12 +55,18 @@ func UpdateProjet(id string, Titre string, Description string, Technologie strin
 	return nil
 }
 
+/*
+Ajouter une image à un projet
+*/
 func AddImageToProject(ID int, imagePath string) error {
 	query := "INSERT INTO projet_image (project_id, url) VALUES (?, ?)"
 	_, err := DB.Exec(query, ID, imagePath)
 	return err
 }
 
+/*
+L'insertion pour projet
+*/
 func InsertProject(titre, date, desc, tech, expl, prob, sol, url string) error {
 
 	query := `INSERT INTO project (titre, date_creation, description, technologie, explication, probleme, solution, url_source) 
@@ -64,6 +76,9 @@ func InsertProject(titre, date, desc, tech, expl, prob, sol, url string) error {
 	return err
 }
 
+/*
+Supprimer un projet
+*/
 func DeleteProject(id string) error {
 	query := "DELETE FROM project WHERE id = ?"
 

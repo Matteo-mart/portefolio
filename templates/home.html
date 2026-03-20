@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portfolio</title>
+    <link rel="stylesheet" href="/templates/style/style.css">
     <link rel="stylesheet" href="/templates/style/home.css">
-    
 </head>
 <body>
 
@@ -27,7 +27,7 @@
 
     <div class="presentation">
         <div class="presentation-avatar">
-             <img src="/templates/images/avatar.jpg" alt="Photo de profil" id="avatar-img">
+            <img src="" alt="Photo de profil" id="avatar-img">
         </div>
         <div class="presentation-content">
             <h1 class="presentation-nom">Matteo Martinez</h1>
@@ -35,7 +35,6 @@
             <p class="presentation-texte">A remplir</p>
         </div>
     </div>
-
 
     <div class="section-header">
         <h2>Projets Récents</h2>
@@ -49,31 +48,27 @@
             <button class="btn-select-mode" id="toggleSelectBtn" onclick="toggleSelectMode()">Sélectionner</button>
         </div>
     </div>
+
     <div class="search-wrapper">
-        <input
-            type="text"
-            class="search-input"
-            id="project-search"
-            placeholder="Rechercher un projet, une technologie…"
-            oninput="filterProjects(this.value)"
-            autocomplete="off"
-        >
-        <button class="search-clear" id="project-search-clear" onclick="clearSearch('project')">x</button>
+        <input type="text" class="search-input" id="project-search"
+               placeholder="Rechercher un projet, une technologie…"
+               oninput="filtrerProjects(this.value)" autocomplete="off">
+        <button class="search-clear" id="project-search-clear" onclick="clearSearch('project')">✕</button>
     </div>
 
     <div id="projectList">
         {{range .Projects}}
-            <div class="project-card"
-                 data-id="{{index . "id"}}"
-                 data-titre="{{index . "titre"}}"
-                 data-tech="{{index . "technologie"}}"
-                 onclick="handleCardClick(this, event)">
-                <strong style="display:block; font-size:1.1rem; margin-bottom:5px;" class="card-titre">{{index . "titre"}}</strong>
-                <p style="font-size:0.85rem; color:#ff0000; margin:10px 0;" class="card-tech">{{index . "technologie"}}</p>
-                <a href="/project/{{index . "id"}}" style="color:#4f8ef7; text-decoration:none; font-size:0.8rem;" onclick="event.stopPropagation()">Aperçu →</a>
-            </div>
+        <div class="project-card"
+             data-id="{{index . "id"}}"
+             data-titre="{{index . "titre"}}"
+             data-tech="{{index . "technologie"}}"
+             onclick="handleCardClick(this)">
+            <strong style="display:block; font-size:1.1rem; margin-bottom:5px;" class="card-titre">{{index . "titre"}}</strong>
+            <p style="font-size:0.85rem; color:#ff0000; margin:10px 0;" class="card-tech">{{index . "technologie"}}</p>
+            <a href="/project/{{index . "id"}}" style="color:#4f8ef7; text-decoration:none; font-size:0.8rem;" onclick="event.stopPropagation()">Aperçu →</a>
+        </div>
         {{else}}
-            <p style="color:#ff0000; grid-column: 1/-1; text-align:center;">Aucun projet dans la base de donnée</p>
+        <p style="color:#ff0000; grid-column: 1/-1; text-align:center;">Aucun projet dans la base de donnée</p>
         {{end}}
         <p class="no-results" id="project-no-results">Aucun projet ne correspond à la recherche</p>
     </div>
@@ -87,14 +82,9 @@
     </div>
 
     <div class="search-wrapper">
-        <input
-            type="text"
-            class="search-input"
-            id="tech-search"
-            placeholder="Rechercher une technologie…"
-            oninput="filterTech(this.value)"
-            autocomplete="off"
-        >
+        <input type="text" class="search-input" id="tech-search"
+               placeholder="Rechercher une technologie…"
+               oninput="filterTech(this.value)" autocomplete="off">
         <button class="search-clear" id="tech-search-clear" onclick="clearSearch('tech')">✕</button>
     </div>
 
@@ -112,8 +102,7 @@
             <div>
                 <a href="{{index . "url_source"}}" target="_blank"
                    style="color:#000000; text-decoration:none; font-size:0.9rem; font-weight:500;"
-                   class="tech-nom"
-                   onclick="event.stopPropagation()">
+                   class="tech-nom" onclick="event.stopPropagation()">
                     {{index . "nom"}}
                 </a>
                 <span style="display:block; font-size:0.72rem; color:#5a5f7a; margin-top:2px;">ID : {{index . "id"}}</span>
@@ -126,9 +115,10 @@
     </div>
 
     <div class="footer-contact">
-        <a href="https://github.com/Matteo-mart" class="btn-github" target="_blank">GitHub - </a>
-        <a href="/contact.html" class="btn-github">Contact</a>
+        <a href="https://github.com/Matteo-mart" class="btn-github" target="_blank">GitHub</a>
+        <a href="/contact" class="btn-github">Contact</a>
     </div>
+
 </div>
 
 <div id="selection-bar">
@@ -136,12 +126,14 @@
     <button style="background:#da3633; border:none; color:white; padding:8px 15px; border-radius:6px; cursor:pointer;" onclick="moveSelectedToCorbeille()">Corbeille</button>
     <button style="background:transparent; border:none; color:#8b8fa8; cursor:pointer;" onclick="cancelSelection()">Annuler</button>
 </div>
+
 <div id="selection-bar-tech">
     <div style="font-weight:700;"><span id="sel-tech-count">0</span> sélectionné(s)</div>
     <button style="background:#da3633; border:none; color:white; padding:8px 15px; border-radius:6px; cursor:pointer;" onclick="moveSelectedTechToCorbeille()">Corbeille</button>
     <button style="background:transparent; border:none; color:#8b8fa8; cursor:pointer;" onclick="cancelTechSelection()">Annuler</button>
 </div>
 
-    <script src="/templates/script/home.js"></script>
+<script src="/templates/script/index.js"></script>
+<script src="/templates/script/home.js"></script>
 </body>
 </html>

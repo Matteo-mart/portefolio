@@ -19,12 +19,12 @@ func HandleHome(w http.ResponseWriter, r *http.Request) {
 
 	projects, err := mariadb.GetAllProjects()
 	if err != nil {
-		log.Println("ERREUR SQL: %s", err)
+		log.Printf("ERREUR SQL: %s", err)
 	}
 
 	technologies, err := mariadb.GetAllTechnologie()
 	if err != nil {
-		log.Println("ERREUR SQL: %s", err)
+		log.Printf("ERREUR SQL: %s", err)
 	}
 
 	if r.URL.Path == "/api/projects" {
@@ -33,7 +33,7 @@ func HandleHome(w http.ResponseWriter, r *http.Request) {
 
 	tmpl, err := template.ParseFiles("templates/home.html")
 	if err != nil {
-		log.Println("Erreur chargement template: %s", err)
+		log.Printf("Erreur chargement template: %s", err)
 		http.Error(w, "Erreur de rendu", http.StatusInternalServerError)
 		return
 	}

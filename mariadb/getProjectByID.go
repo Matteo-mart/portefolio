@@ -6,6 +6,9 @@ import (
 	"portefolio/models"
 )
 
+/*
+Permet de récuperer un projet via son id
+*/
 func GetProjectByID(id int) (models.Project, error) {
 	var p models.Project
 	err := DB.QueryRow(`SELECT id, titre, date_creation, description, technologie, explication, probleme, solution, url_source

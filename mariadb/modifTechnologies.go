@@ -4,6 +4,9 @@ import (
 	"fmt"
 )
 
+/*
+modifier technologies
+*/
 func UpdateTechnologies(id int, nom string, icone string, url_source string) error {
 	query := `
         UPDATE technologies

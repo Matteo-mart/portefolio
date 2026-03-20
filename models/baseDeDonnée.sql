@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS corbeille_image (
     url varchar(255) NOT NULL,
     mime_type varchar(100),
     PRIMARY KEY (id)
-);
+) ENGINE=InnoDB;
 
 -- project
 CREATE TABLE IF NOT EXISTS project (
@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS project_image (
         ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
--- Table des technologies 
+-- technologies
 CREATE TABLE IF NOT EXISTS corbeille_technologies (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     tech_id BIGINT UNSIGNED NOT NULL,

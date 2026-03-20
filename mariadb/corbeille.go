@@ -5,6 +5,9 @@ import (
 	"portefolio/models"
 )
 
+/*
+Corbeille image (sélectionne url) via 'project_id'
+*/
 func GetCorbeilleImages(projectID int) ([]string, error) {
 	rows, err := DB.Query("SELECT url FROM corbeille_image WHERE project_id = ?", projectID)
 	if err != nil {
@@ -21,6 +24,9 @@ func GetCorbeilleImages(projectID int) ([]string, error) {
 	return urls, nil
 }
 
+/*
+Sélectionne le 'project_id' via son id pour le supprimer définitivement
+*/
 func DeleteFromCorbeille(id string) error {
 	var projectID int
 	err := DB.QueryRow("SELECT project_id FROM corbeille WHERE id = ?", id).Scan(&projectID)
@@ -44,6 +50,9 @@ func DeleteFromCorbeille(id string) error {
 	return nil
 }
 
+/*
+Sélectionne un projet via son id et le déplace en corbeille
+*/
 func MoveToCorbeille(id string) error {
 	var projectID int
 	var titre, technologie, url_source string
@@ -74,6 +83,9 @@ func MoveToCorbeille(id string) error {
 	return err
 }
 
+/*
+Sélectionne un projet à restaurer via son id depuis la corbeille
+*/
 func RestoreFromCorbeille(id string) error {
 	var projectID int
 	var titre, technologie, url_source string
@@ -105,6 +117,9 @@ func RestoreFromCorbeille(id string) error {
 	return err
 }
 
+/*
+Supprimer tous les projets qui se trouvent dans la corbeille
+*/
 func ViderCorbeille() error {
 	rows, err := DB.Query("SELECT project_id FROM corbeille")
 	if err != nil {
@@ -129,6 +144,10 @@ func ViderCorbeille() error {
 	return err
 }
 
+/*
+Permet d'afficher tous les projets qui sont dans la corbeille
+et les ranger par date de suppression
+*/
 func GetCorbeille() ([]models.CorbeilleEntry, error) {
 	rows, err := DB.Query("SELECT id, project_id, titre, date_suppression FROM corbeille ORDER BY date_suppression DESC")
 	if err != nil {
@@ -159,6 +178,9 @@ func GetCorbeille() ([]models.CorbeilleEntry, error) {
 	return entries, nil
 }
 
+/*
+Permet de mettre dans la corbeille les technologies
+*/
 func MoveToCorbeilleTech(id int) error {
 	var nom, icone, url_source string
 	err := DB.QueryRow("SELECT nom, icone, url_source FROM technologies WHERE id = ?", id).Scan(&nom, &icone, &url_source)
@@ -176,6 +198,9 @@ func MoveToCorbeilleTech(id int) error {
 	return err
 }
 
+/*
+Permet de restaurer les technologies depuis la corbeille
+*/
 func RestoreFromCorbeilleTech(id int) error {
 	var techID int
 	var nom, icone, url_source string
@@ -196,6 +221,9 @@ func RestoreFromCorbeilleTech(id int) error {
 	return err
 }
 
+/*
+Permet de supprimer les technologies depuis la corbeille
+*/
 func DeleteFromCorbeilleTech(id int) error {
 	result, err := DB.Exec("DELETE FROM corbeille_technologies WHERE id = ?", id)
 	if err != nil {
@@ -208,6 +236,9 @@ func DeleteFromCorbeilleTech(id int) error {
 	return nil
 }
 
+/*
+Permet d'afficher les technologies dans la corbeille
+*/
 func GetCorbeilleTech() ([]models.CorbeilleTech, error) {
 	rows, err := DB.Query("SELECT id, tech_id, nom, icone, url_source, date_suppression FROM corbeille_technologies ORDER BY date_suppression DESC")
 	if err != nil {

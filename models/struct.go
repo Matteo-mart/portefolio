@@ -1,10 +1,5 @@
 package models
 
-import (
-	"encoding/json"
-	"net/http"
-)
-
 type Project struct {
 	ID           int      `json:"id"`
 	Titre        string   `json:"title"`
@@ -51,16 +46,6 @@ type Technologie struct {
 	Nom        string `json:"nom"`
 	Icone      string `json:"icone,omitempty"`
 	Url_source string `json:"url_source"`
-}
-
-func jsonResp(w http.ResponseWriter, status int, data any) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(status)
-	json.NewEncoder(w).Encode(data)
-}
-
-func jsonErr(w http.ResponseWriter, status int, msg string) {
-	jsonResp(w, status, map[string]string{"error": msg})
 }
 
 type HomeData struct {

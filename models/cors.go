@@ -1,6 +1,8 @@
 package models
 
-import "net/http"
+import (
+	"net/http"
+)
 
 func SetupCORS(w http.ResponseWriter, r *http.Request) bool {
 	w.Header().Set("Access-Control-Allow-Origin", "*")

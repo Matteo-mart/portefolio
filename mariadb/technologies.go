@@ -2,6 +2,9 @@ package mariadb
 
 import "log"
 
+/*
+Récupère toutes les technologies
+*/
 func GetAllTechnologie() ([]map[string]interface{}, error) {
 
 	query := "SELECT id, nom, icone, url_source FROM technologies"

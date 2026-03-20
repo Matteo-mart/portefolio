@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{.Titre}} | Présentation</title>
+    <link rel="stylesheet" href="/templates/style/style.css">
     <link rel="stylesheet" href="/templates/style/projet.css">
 
 </head>
@@ -25,7 +26,8 @@
         <h1>{{.Titre}}</h1>
 
         <div class="meta-bar">
-            <div class="meta-date">📅 <span>{{.DateCreation}}</span></div>
+            <!-- <div class="meta-date"></div><span>{{.DateCreation}}</span></div> -->
+             <div class="meta-date"><span>{{.DateCreation}}</span></div>
             <span class="tech-badge">{{.Technologie}}</span>
         </div>
 
@@ -53,7 +55,7 @@
 </div>
 
     <script src="/templates/script/projet.js"></script>
-<button class="btn-del" onclick="moveToCorbeille()">🗑 Corbeille</button>
+<button class="btn-del" onclick="moveToCorbeille()">Corbeille</button>
 
 </body>
 </html>

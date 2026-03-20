@@ -153,15 +153,12 @@ func HandleDeleteProject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// log.Printf("Méthode reçue : %s", r.Method)
-
 	if r.Method != http.MethodDelete {
 		http.Error(w, "Méthode non autorisée", http.StatusMethodNotAllowed)
 		return
 	}
 
 	id := r.URL.Query().Get("id")
-	// log.Printf("id extrait de l'URL : '%s'", id)
 
 	if id == "" {
 		http.Error(w, "Erreur : Le paramètre 'id' est vide", http.StatusBadRequest)
