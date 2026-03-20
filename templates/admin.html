@@ -16,14 +16,18 @@
 
 <div class="conteneur">
 
-    <div class="onglets">
-        <button class="onglet-btn actif"  onclick="afficherSection('ajouter', this)">Ajouter un projet</button>
-        <button class="onglet-btn"        onclick="afficherSection('technologies-add', this)">Ajouter une technologie</button>
-        <button class="onglet-btn"        onclick="afficherSection('modifier', this)">Modifier un projet</button>
-        <button class="onglet-btn"        onclick="afficherSection('contact', this)">Modifier contact</button>
-        <button class="onglet-btn"        onclick="afficherSection('technologies', this)">Modifier Technologies</button>
-        <button class="onglet-btn"        onclick="afficherSection('supprimer', this)">Supprimer un projet</button>
-    </div>
+    <label for="pet-select">Choisir</label>
+        <select class="" id="pet-select" onchange="afficherSection(this.value)">
+            <div class="onglets">
+                <option value="ajouter">Ajouter un projet</option>
+                <option value="technologies-add">Ajouter une technologie</option>
+                <option value="modifier">Modifier un projet</option>
+                <!-- <option value="modifier">Modifier un contact</option> -->
+                <option value="technologies">Modifier technologies</option>
+                <!-- <option value="supprimer">Supprimer un projet</option> -->
+            </div>
+        </select>
+    
 
     <div id="section-ajouter" class="section-form active">
         <label>Titre</label>
