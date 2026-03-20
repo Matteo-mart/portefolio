@@ -27,7 +27,7 @@ func HandleDeleteTechnologie(w http.ResponseWriter, r *http.Request) {
 
 	if err := mariadb.MoveToCorbeilleTech(id); err != nil {
 		log.Printf("Erreur corbeille tech [%d] : %v", id, err)
-		http.Error(w, "Erreur lors de la suppression", http.StatusInternalServerError)
+		http.Error(w, "Erreur suppression", http.StatusInternalServerError)
 		return
 	}
 

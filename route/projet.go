@@ -161,7 +161,7 @@ func HandleDeleteProject(w http.ResponseWriter, r *http.Request) {
 	id := r.URL.Query().Get("id")
 
 	if id == "" {
-		http.Error(w, "Erreur : Le paramètre 'id' est vide", http.StatusBadRequest)
+		http.Error(w, "Erreur: 'id' est vide", http.StatusBadRequest)
 		return
 	}
 

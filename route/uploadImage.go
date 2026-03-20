@@ -24,7 +24,7 @@ func HandleUpload(w http.ResponseWriter, r *http.Request) {
 	defer dst.Close()
 
 	if _, err := io.Copy(dst, file); err != nil {
-		http.Error(w, "Erreur lors de l'écriture", 500)
+		http.Error(w, "Erreur lors de l écriture", 500)
 		return
 	}
 
