@@ -59,7 +59,7 @@ func HandleContact(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Erreur base de données", http.StatusInternalServerError)
 		return
 	}
-	log.Printf("data contact: %+v", data)
+	// log.Printf("data contact: %+v", data)
 	tmpl.ExecuteTemplate(w, "contact.html", data)
 
 }
