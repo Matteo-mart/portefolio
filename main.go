@@ -6,12 +6,15 @@ import (
 	"net/http"
 	"portefolio/mariadb"
 	"portefolio/route"
+	"portefolio/utils"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
 )
 
 func main() {
+
+	utils.ClearTerminal()
 
 	//Connexion mariadb
 	if err := mariadb.Connection(); err != nil {
