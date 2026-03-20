@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 	"portefolio/mariadb"
-	"portefolio/models"
+	"portefolio/utils"
 	"strconv"
 
 	"github.com/gorilla/mux"
@@ -49,7 +49,7 @@ func GetProjectHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	ID := vars["id"]
 
-	var p models.Project
+	var p utils.Project
 	err := mariadb.DB.QueryRow("SELECT id, titre, date_creation, description, technologie, explication, probleme, solution, url_source FROM project WHERE id = ?", ID).
 		Scan(&p.ID, &p.Titre, &p.DateCreation, &p.Description, &p.Technologie, &p.Explication, &p.Probleme, &p.Solution, &p.UrlSource)
 

@@ -3,12 +3,12 @@ package corbeille
 import (
 	"net/http"
 	corbeillemariadb "portefolio/mariadb/corbeilleMariadb"
-	"portefolio/models"
+	"portefolio/utils"
 	"strconv"
 )
 
 func HandleCorbeilleRestore(w http.ResponseWriter, r *http.Request) {
-	if models.SetupCORS(w, r) {
+	if utils.SetupCORS(w, r) {
 		return
 	}
 
@@ -29,7 +29,7 @@ func HandleCorbeilleRestore(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleRestoreCorbeilleTech(w http.ResponseWriter, r *http.Request) {
-	if models.SetupCORS(w, r) {
+	if utils.SetupCORS(w, r) {
 		return
 	}
 	if r.Method != http.MethodPost {

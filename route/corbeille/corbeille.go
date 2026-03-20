@@ -4,11 +4,11 @@ import (
 	"encoding/json"
 	"net/http"
 	corbeillemariadb "portefolio/mariadb/corbeilleMariadb"
-	"portefolio/models"
+	"portefolio/utils"
 )
 
 func HandleCorbeilleList(w http.ResponseWriter, r *http.Request) {
-	if models.SetupCORS(w, r) {
+	if utils.SetupCORS(w, r) {
 		return
 	}
 
@@ -23,7 +23,7 @@ func HandleCorbeilleList(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleMoveToCorbeille(w http.ResponseWriter, r *http.Request) {
-	if models.SetupCORS(w, r) {
+	if utils.SetupCORS(w, r) {
 		return
 	}
 	if r.Method != http.MethodPost {
@@ -48,7 +48,7 @@ func HandleMoveToCorbeille(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleGetCorbeilleTech(w http.ResponseWriter, r *http.Request) {
-	if models.SetupCORS(w, r) {
+	if utils.SetupCORS(w, r) {
 		return
 	}
 	entries, err := corbeillemariadb.GetCorbeilleTech()

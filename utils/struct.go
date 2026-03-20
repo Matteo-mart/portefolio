@@ -1,4 +1,4 @@
-package models
+package utils
 
 type Project struct {
 	ID           int      `json:"id"`

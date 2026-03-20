@@ -5,11 +5,11 @@ import (
 	"log"
 	"net/http"
 	"portefolio/mariadb"
-	"portefolio/models"
+	"portefolio/utils"
 )
 
 func HandleHome(w http.ResponseWriter, r *http.Request) {
-	if models.SetupCORS(w, r) {
+	if utils.SetupCORS(w, r) {
 		return
 	}
 	if r.URL.Path != "/" && r.URL.Path != "/api/projects" {
@@ -38,7 +38,7 @@ func HandleHome(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tmpl.Execute(w, models.HomeData{
+	tmpl.Execute(w, utils.HomeData{
 		Projects:     projects,
 		Technologies: technologies,
 	})

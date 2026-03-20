@@ -8,7 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"portefolio/mariadb"
-	"portefolio/models"
+	"portefolio/utils"
 )
 
 func HandleAddProject(w http.ResponseWriter, r *http.Request) {
@@ -62,7 +62,7 @@ func HandleAddProject(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleAddTechnologie(w http.ResponseWriter, r *http.Request) {
-	if models.SetupCORS(w, r) {
+	if utils.SetupCORS(w, r) {
 		return
 	}
 	if r.Method != http.MethodPost {
@@ -70,7 +70,7 @@ func HandleAddTechnologie(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var t models.Technologie
+	var t utils.Technologie
 	if err := json.NewDecoder(r.Body).Decode(&t); err != nil {
 		http.Error(w, "Données invalides", http.StatusBadRequest)
 		return

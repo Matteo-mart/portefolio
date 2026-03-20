@@ -8,14 +8,14 @@ import (
 	"net/http"
 	"os"
 	"portefolio/mariadb"
-	"portefolio/models"
+	"portefolio/utils"
 
 	"github.com/gorilla/mux"
 )
 
 func HandleUpdateContact(w http.ResponseWriter, r *http.Request) {
 
-	if models.SetupCORS(w, r) {
+	if utils.SetupCORS(w, r) {
 		return
 	}
 
@@ -29,7 +29,7 @@ func HandleUpdateContact(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var c models.ContactUpdate
+	var c utils.ContactUpdate
 	err := json.NewDecoder(r.Body).Decode(&c)
 	if err != nil || c.ID == "" {
 		http.Error(w, "Données invalides", http.StatusBadRequest)
@@ -64,7 +64,7 @@ func HandleContact(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleUpdateTechnologies(w http.ResponseWriter, r *http.Request) {
-	if models.SetupCORS(w, r) {
+	if utils.SetupCORS(w, r) {
 		return
 	}
 	if r.Method == "OPTIONS" {
@@ -76,7 +76,7 @@ func HandleUpdateTechnologies(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var t models.Technologie
+	var t utils.Technologie
 	err := json.NewDecoder(r.Body).Decode(&t)
 
 	if err != nil || t.ID <= 0 {
@@ -124,7 +124,7 @@ func HandleUpdateProjet(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
 
-	if models.SetupCORS(w, r) {
+	if utils.SetupCORS(w, r) {
 		return
 	}
 	if r.Method == "OPTIONS" {
@@ -132,7 +132,7 @@ func HandleUpdateProjet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var c models.ProjetUpdate
+	var c utils.ProjetUpdate
 	err := json.NewDecoder(r.Body).Decode(&c)
 
 	if err != nil {

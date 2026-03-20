@@ -2,7 +2,7 @@ package corbeillemariadb
 
 import (
 	"fmt"
-	"portefolio/models"
+	"portefolio/utils"
 )
 
 /*
@@ -61,16 +61,16 @@ func MoveToCorbeille(id string) error {
 Permet d'afficher tous les projets qui sont dans la corbeille
 et les ranger par date de suppression
 */
-func GetCorbeille() ([]models.CorbeilleEntry, error) {
+func GetCorbeille() ([]utils.CorbeilleEntry, error) {
 	rows, err := DB.Query("SELECT id, project_id, titre, date_suppression FROM corbeille ORDER BY date_suppression DESC")
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
-	var entries []models.CorbeilleEntry
+	var entries []utils.CorbeilleEntry
 	for rows.Next() {
-		var e models.CorbeilleEntry
+		var e utils.CorbeilleEntry
 		if err := rows.Scan(&e.ID, &e.ProjectID, &e.Titre, &e.DateSuppression); err != nil {
 			return nil, err
 		}
@@ -114,16 +114,16 @@ func MoveToCorbeilleTech(id int) error {
 /*
 Permet d'afficher les technologies dans la corbeille
 */
-func GetCorbeilleTech() ([]models.CorbeilleTech, error) {
+func GetCorbeilleTech() ([]utils.CorbeilleTech, error) {
 	rows, err := DB.Query("SELECT id, tech_id, nom, icone, url_source, date_suppression FROM corbeille_technologies ORDER BY date_suppression DESC")
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
-	var entries []models.CorbeilleTech
+	var entries []utils.CorbeilleTech
 	for rows.Next() {
-		var e models.CorbeilleTech
+		var e utils.CorbeilleTech
 		if err := rows.Scan(&e.ID, &e.TechID, &e.Nom, &e.Icone, &e.UrlSource, &e.DateSuppression); err != nil {
 			return nil, err
 		}

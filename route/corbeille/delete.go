@@ -4,12 +4,12 @@ import (
 	"log"
 	"net/http"
 	corbeillemariadb "portefolio/mariadb/corbeilleMariadb"
-	"portefolio/models"
+	"portefolio/utils"
 	"strconv"
 )
 
 func HandleCorbeilleVider(w http.ResponseWriter, r *http.Request) {
-	if models.SetupCORS(w, r) {
+	if utils.SetupCORS(w, r) {
 		return
 	}
 
@@ -24,7 +24,7 @@ func HandleCorbeilleVider(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleCorbeilleDelete(w http.ResponseWriter, r *http.Request) {
-	if models.SetupCORS(w, r) {
+	if utils.SetupCORS(w, r) {
 		return
 	}
 
@@ -45,7 +45,7 @@ func HandleCorbeilleDelete(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleDeleteTechnologie(w http.ResponseWriter, r *http.Request) {
-	if models.SetupCORS(w, r) {
+	if utils.SetupCORS(w, r) {
 		return
 	}
 	if r.Method != http.MethodDelete {
@@ -70,7 +70,7 @@ func HandleDeleteTechnologie(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleDeleteDefinitiveTech(w http.ResponseWriter, r *http.Request) {
-	if models.SetupCORS(w, r) {
+	if utils.SetupCORS(w, r) {
 		return
 	}
 	if r.Method != http.MethodDelete {
@@ -93,7 +93,7 @@ func HandleDeleteDefinitiveTech(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleDeleteProject(w http.ResponseWriter, r *http.Request) {
-	if models.SetupCORS(w, r) {
+	if utils.SetupCORS(w, r) {
 		return
 	}
 	if r.Method == "OPTIONS" {
