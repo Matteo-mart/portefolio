@@ -150,3 +150,22 @@ function sortProjects(criteria) {
         cards.sort(comparators[criteria]).forEach(c => list.insertBefore(c, noRes));
     }
 }
+
+
+function toggleSearchPanel() {
+    const panel = document.getElementById('searchPanel');
+    const btn = document.getElementById('searchToggleBtn');
+    const isOpen = panel.classList.toggle('open');
+    btn.classList.toggle('active', isOpen);
+    if (isOpen) {
+        setTimeout(() => document.getElementById('project-search').focus(), 100);
+    }
+}
+
+document.addEventListener('click', function(e) {
+    const wrapper = document.querySelector('.search-toggle-wrapper');
+    if (wrapper && !wrapper.contains(e.target)) {
+        document.getElementById('searchPanel').classList.remove('open');
+        document.getElementById('searchToggleBtn').classList.remove('active');
+    }
+});

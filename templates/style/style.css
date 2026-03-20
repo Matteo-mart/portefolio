@@ -1,48 +1,48 @@
 :root {
-    --bg-base:          #f0f2f5;
-    --bg-surface:       #ffffff;
-    --bg-elevated:      #f8fafc;
-    --bg-hover:         #edf2f7;
-    --bg-hover-deep:    #e2eaf4;
+    --bg-base:          #1c1e24;
+    --bg-surface:       #22252d;
+    --bg-elevated:      #292c36;
+    --bg-hover:         #30333f;
+    --bg-hover-deep:    #383c4a;
 
-    --border:           #e2e8f0;
-    --border-hover:     #c8d6e8;
-    --border-input:     #cbd5e1;
-    --border-muted:     #d1dce8;
-    --border-focus:     #4f8ef7;
+    --border:           #333744;
+    --border-hover:     #424759;
+    --border-input:     #3c4052;
+    --border-muted:     #383b4c;
+    --border-focus:     #6b87c0;
 
-    --text-primary:     #1e293b;
-    --text-secondary:   #475569;
-    --text-muted:       #64748b;
-    --text-dimmed:      #94a3b8;
-    --text-ghost:       #b0bec5;
+    --text-primary:     #cdd4e4;
+    --text-secondary:   #8e9ab2;
+    --text-muted:       #6d7a94;
+    --text-dimmed:      #505a72;
+    --text-ghost:       #383f54;
 
-    --accent:           #3b82f6;
-    --accent-dark:      #2563eb;
-    --accent-hover:     #60a5fa;
-    --accent-bg:        rgba(59, 130, 246, 0.08);
-    --accent-border:    rgba(59, 130, 246, 0.25);
-    --accent-focus:     rgba(59, 130, 246, 0.12);
-    --accent-glow:      rgba(59, 130, 246, 0.25);
-    --accent-glow-hover:rgba(59, 130, 246, 0.4);
-    --accent-soft:      rgba(59, 130, 246, 0.1);
+    --accent:           #6b87c0;
+    --accent-dark:      #526dad;
+    --accent-hover:     #7f9ad0;
+    --accent-bg:        rgba(107, 135, 192, 0.08);
+    --accent-border:    rgba(107, 135, 192, 0.20);
+    --accent-focus:     rgba(107, 135, 192, 0.12);
+    --accent-glow:      rgba(107, 135, 192, 0.14);
+    --accent-glow-hover:rgba(107, 135, 192, 0.22);
+    --accent-soft:      rgba(107, 135, 192, 0.07);
 
-    --green:            #10b981;
-    --green-dark:       #059669;
-    --green-bg:         #ecfdf5;
-    --green-text:       #065f46;
-    --green-border:     #6ee7b7;
+    --green:            #3da882;
+    --green-dark:       #2d8a6a;
+    --green-bg:         rgba(61, 168, 130, 0.09);
+    --green-text:       #56c49c;
+    --green-border:     rgba(61, 168, 130, 0.28);
 
-    --red:              #ef4444;
-    --red-dark:         #dc2626;
-    --red-soft:         rgba(239, 68, 68, 0.05);
-    --red-bg:           #fef2f2;
-    --red-bg-hover:     #fee2e2;
-    --red-text:         #991b1b;
-    --red-border:       #fca5a5;
-    --red-border-hover: #f87171;
-    --red-glow:         rgba(239, 68, 68, 0.25);
-    --red-glow-hover:   rgba(239, 68, 68, 0.4);
+    --red:              #b06868;
+    --red-dark:         #965252;
+    --red-soft:         rgba(176, 104, 104, 0.05);
+    --red-bg:           rgba(176, 104, 104, 0.08);
+    --red-bg-hover:     rgba(176, 104, 104, 0.14);
+    --red-text:         #cc8a8a;
+    --red-border:       rgba(176, 104, 104, 0.28);
+    --red-border-hover: rgba(176, 104, 104, 0.45);
+    --red-glow:         rgba(176, 104, 104, 0.14);
+    --red-glow-hover:   rgba(176, 104, 104, 0.24);
 
     --radius-sm:        6px;
     --radius-md:        10px;
@@ -51,8 +51,8 @@
     --radius-2xl:       24px;
     --radius-pill:      999px;
 
-    --shadow-sm:        0 1px 3px rgba(0,0,0,0.1);
-    --shadow-md:        0 4px 6px -1px rgba(0,0,0,0.1);
+    --shadow-sm:        0 1px 3px rgba(0,0,0,0.30);
+    --shadow-md:        0 4px 6px -1px rgba(0,0,0,0.35);
 
     --header-height:    64px;
 }
@@ -131,7 +131,7 @@ header h2 {
     padding:       6px;
     border-radius: var(--radius-lg);
     border:        1px solid var(--border);
-    box-shadow:    0 12px 40px rgba(0, 0, 0, 0.15);
+    box-shadow:    0 12px 40px rgba(0, 0, 0, 0.35);
     z-index:       1000;
     min-width:     180px;
 }
@@ -247,21 +247,21 @@ textarea {
 }
 
 .btn {
-    padding:       12px 20px;
-    border:        none;
-    border-radius: var(--radius-md);
-    cursor:        pointer;
-    font-family:   inherit;
-    font-weight:   600;
-    font-size:     0.9rem;
-    color:         white;
-    transition:    filter 0.2s, transform 0.1s;
-    display:       inline-block;
-    text-align:    center;
+    padding:         12px 20px;
+    border:          none;
+    border-radius:   var(--radius-md);
+    cursor:          pointer;
+    font-family:     inherit;
+    font-weight:     600;
+    font-size:       0.9rem;
+    color:           white;
+    transition:      filter 0.2s, transform 0.1s;
+    display:         inline-block;
+    text-align:      center;
     text-decoration: none;
 }
 
-.btn:hover  { filter:    brightness(1.1); }
+.btn:hover  { filter:    brightness(1.07); }
 .btn:active { transform: scale(0.98); }
 
 .btn:disabled {
@@ -288,11 +288,11 @@ textarea {
     font-size:     0.82rem;
     background:    linear-gradient(135deg, var(--red), var(--red-dark));
     color:         white;
-    box-shadow:    0 2px 10px var(--red-glow);
+    box-shadow:    0 2px 8px var(--red-glow);
     transition:    filter 0.2s, transform 0.1s, box-shadow 0.2s;
 }
 
-.btn-del:hover  { filter: brightness(1.1); transform: translateY(-1px); box-shadow: 0 4px 20px var(--red-glow-hover); }
+.btn-del:hover  { filter: brightness(1.07); transform: translateY(-1px); box-shadow: 0 4px 16px var(--red-glow-hover); }
 .btn-del:active { transform: scale(0.98); }
 
 .btn-del:disabled {
@@ -351,10 +351,10 @@ textarea {
     transition:      filter 0.2s, transform 0.15s;
 }
 
-.btn-social:hover { filter: brightness(1.15); transform: translateY(-1px); }
+.btn-social:hover { filter: brightness(1.08); transform: translateY(-1px); }
 
-.linkedin { background: #0a66c2; }
-.github   { background: #21262d; border: 1px solid var(--border-input); }
+.linkedin { background: #4a85b8; }
+.github   { background: #444c55; border: 1px solid var(--border-input); }
 
 .message {
     margin-top:    14px;
@@ -448,10 +448,10 @@ textarea {
 .item-info .meta span { display: inline-block; margin-right: 12px; }
 
 .card-actions {
-    display:    flex;
-    gap:        8px;
+    display:     flex;
+    gap:         8px;
     flex-shrink: 0;
-    align-self: center;
+    align-self:  center;
 }
 
 .tech-badge {

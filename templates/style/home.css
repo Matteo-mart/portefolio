@@ -259,7 +259,6 @@ header h2 {
     max-width:  550px;
 }
 
-/* ── Footer ── */
 .footer-contact {
     margin-top:  60px;
     text-align:  center;
@@ -284,4 +283,77 @@ mark {
     .presentation { flex-direction: column; text-align: center; }
     .presentation-texte { max-width: 100%; }
     header { padding: 0 16px; }
+}
+
+.search-toggle-wrapper {
+    position: relative;
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 16px;
+}
+
+.search-toggle-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 1px solid #2a2d38;
+    background: #1a1d27;
+    color: #8b8fa8;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+    z-index: 10;
+}
+
+.search-toggle-btn:hover,
+.search-toggle-btn.active {
+    background: #4f8ef7;
+    color: #fff;
+    border-color: #4f8ef7;
+}
+
+.search-panel {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 340px;
+    background: #1a1d27;
+    border: 1px solid #2a2d38;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    pointer-events: none;
+    transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1), opacity 0.25s ease;
+    z-index: 100;
+}
+
+.search-panel.open {
+    max-height: 200px;
+    opacity: 1;
+    pointer-events: all;
+}
+
+.search-panel-inner {
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.search-panel-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.search-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #5a5f7a;
 }
