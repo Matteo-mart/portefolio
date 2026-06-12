@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/rs/zerolog"
-	"github.com/rs/zerolog/log"
+	// "github.com/rs/zerolog/log"
 )
 
 // responseWriter wraps http.ResponseWriter pour capturer le status code
